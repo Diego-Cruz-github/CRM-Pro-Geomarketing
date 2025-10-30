@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CRM Pro Geomarketing</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .nav-links {
+            display: flex;
+            margin-left: auto;
+        }
+        
+        .nav-link {
+            padding: 20px 25px;
+            text-decoration: none;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #007bff;
+        }
+        
+        .nav-link.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .crm-card {
+            border-left: 4px solid #28a745;
+        }
+        
+        .crm-card .stat-number {
+            color: #28a745;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .no-data h3 {
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">CRM Pro</div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Geomarketing</a>
+                <a href="/crm" class="nav-link">CRM Pipeline</a>
+                <a href="/dashboard" class="nav-link active">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Dashboard Analítico</h1>
+            <p class="page-subtitle">Os dados e estatísticas aparecerão aqui após fazer upload do arquivo na página Geomarketing ou CRM Pipeline</p>
+        </div>
+        
+        <div id="loadingSection" class="loading">
+            <h3>Carregando estatísticas...</h3>
+        </div>
+        
+        
+        <div id="dashboardContent" style="display: none;">
+            <!-- CRM Overview Section -->
+            <div class="section">
+                <h2 class="section-title">Performance de Vendas</h2>
+                <div class="stats-grid">
+                    <div class="stat-card crm-card">
+                        <div class="stat-number" id="totalLeads">0</div>
+                        <div class="stat-label">Total de Leads</div>
+                    </div>
+                    <div class="stat-card crm-card">
+                        <div class="stat-number" id="conversionRate">0%</div>
+                        <div class="stat-label">Taxa de Conversão</div>
+                    </div>
+                    <div class="stat-card crm-card">
+                        <div class="stat-number" id="leadsInProgress">0</div>
+                        <div class="stat-label">Em Andamento</div>
+                    </div>
+                    <div class="stat-card crm-card">
+                        <div class="stat-number" id="contactRate">0%</div>
+                        <div class="stat-label">Com Dados de Contato</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data Quality Section -->
+            <div class="section">
+                <h2 class="section-title">Qualidade dos Dados</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalRecords">0</div>
+                        <div class="stat-label">Total de Empresas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="geocodedRecords">0</div>
+                        <div class="stat-label">Geocodificadas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="geocodingRate">0%</div>
+                        <div class="stat-label">Taxa de Geocoding</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="uniqueStates">0</div>
+                        <div class="stat-label">Estados Diferentes</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-grid">
+                <!-- CRM Charts -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Funil de Vendas</h3>
+                    <div class="chart-container">
+                        <canvas id="pipelineChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title">Status dos Leads</h3>
+                    <div class="chart-container">
+                        <canvas id="leadsStatusChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Geographic Charts -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Distribuição por Estado</h3>
+                    <div class="chart-container">
+                        <canvas id="statesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title">Distribuição por Porte</h3>
+                    <div class="chart-container">
+                        <canvas id="sizesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <script>
+        let statesChart, sizesChart, pipelineChart, leadsStatusChart;
+        
+        // Carregar dados do dashboard
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/dashboard/stats');
+                const data = await response.json();
+                
+                if (data.error) {
+                    showNoData();
+                    return;
+                }
+                
+                hideLoading();
+                populateStats(data);
+                createCharts(data);
+                
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+                showError('Erro ao carregar dados do dashboard');
+            }
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+        }
+        
+        function showNoData() {
+            document.getElementById('loadingSection').style.display = 'none';
+            // Sem dados - apenas esconder loading
+        }
+        
+        function showError(message) {
+            document.getElementById('loadingSection').innerHTML = `
+                <div class="error">${message}</div>
+            `;
+        }
+        
+        function populateStats(data) {
+            // CRM Stats
+            document.getElementById('totalLeads').textContent = data.total_records.toLocaleString();
+            document.getElementById('conversionRate').textContent = data.conversion_rate + '%';
+            document.getElementById('leadsInProgress').textContent = data.leads_in_progress.toLocaleString();
+            document.getElementById('contactRate').textContent = data.contact_rate + '%';
+            
+            // Data Quality Stats
+            document.getElementById('totalRecords').textContent = data.total_records.toLocaleString();
+            document.getElementById('geocodedRecords').textContent = data.geocoded_records.toLocaleString();
+            document.getElementById('geocodingRate').textContent = data.geocoding_rate + '%';
+            document.getElementById('uniqueStates').textContent = Object.keys(data.by_uf).length;
+        }
+        
+        function createCharts(data) {
+            // CRM Pipeline Chart (Funil)
+            const pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
+            const pipelineData = data.pipeline_stats || {};
+            pipelineChart = new Chart(pipelineCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Não Contactados', 'E-mail Enviado', 'SMS Enviado', 'E-mail e SMS', 'Negociando', 'Fechados', 'Perdidos'],
+                    datasets: [{
+                        data: [
+                            pipelineData.nao_contactado || 0,
+                            pipelineData.email_enviado || 0,
+                            pipelineData.sms_enviado || 0,
+                            pipelineData.email_sms_enviados || 0,
+                            pipelineData.negociacao || 0,
+                            pipelineData.fechado || 0,
+                            pipelineData.perdido || 0
+                        ],
+                        backgroundColor: [
+                            '#6c757d',  // Não Contactado
+                            '#17a2b8',  // E-mail Enviado
+                            '#fd7e14',  // SMS Enviado
+                            '#6610f2',  // E-mail e SMS
+                            '#ffc107',  // Negociando
+                            '#28a745',  // Fechado
+                            '#dc3545'   // Perdido
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Leads Status Chart (Barra horizontal)
+            const leadsCtx = document.getElementById('leadsStatusChart').getContext('2d');
+            leadsStatusChart = new Chart(leadsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Não Contactados', 'E-mail Enviado', 'SMS Enviado', 'E-mail e SMS', 'Negociando', 'Fechados', 'Perdidos'],
+                    datasets: [{
+                        label: 'Quantidade de Leads',
+                        data: [
+                            pipelineData.nao_contactado || 0,
+                            pipelineData.email_enviado || 0,
+                            pipelineData.sms_enviado || 0,
+                            pipelineData.email_sms_enviados || 0,
+                            pipelineData.negociacao || 0,
+                            pipelineData.fechado || 0,
+                            pipelineData.perdido || 0
+                        ],
+                        backgroundColor: [
+                            '#6c757d',
+                            '#17a2b8',
+                            '#fd7e14',
+                            '#6610f2',
+                            '#ffc107',
+                            '#28a745',
+                            '#dc3545'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Chart de estados
+            const statesCtx = document.getElementById('statesChart').getContext('2d');
+            statesChart = new Chart(statesCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data.by_uf),
+                    datasets: [{
+                        label: 'Empresas por Estado',
+                        data: Object.values(data.by_uf),
+                        backgroundColor: '#007bff',
+                        borderColor: '#0056b3',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Chart de portes
+            const sizesCtx = document.getElementById('sizesChart').getContext('2d');
+            sizesChart = new Chart(sizesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(data.by_porte),
+                    datasets: [{
+                        data: Object.values(data.by_porte),
+                        backgroundColor: [
+                            '#007bff',
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545',
+                            '#6c757d'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Chart de situações
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(data.by_situacao),
+                    datasets: [{
+                        data: Object.values(data.by_situacao),
+                        backgroundColor: [
+                            '#28a745',
+                            '#dc3545',
+                            '#ffc107',
+                            '#6c757d'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Chart de geocodificação
+            const geoCtx = document.getElementById('geoChart').getContext('2d');
+            const geoSuccess = data.geocoded_records;
+            const geoFailed = data.total_records - data.geocoded_records;
+            
+            geoChart = new Chart(geoCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Geocodificadas', 'Não Geocodificadas'],
+                    datasets: [{
+                        data: [geoSuccess, geoFailed],
+                        backgroundColor: ['#28a745', '#dc3545']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        
+        // Escutar mudanças de dados de outras abas
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'dataUpdated') {
+                // Recarregar dashboard quando houver atualização
+                loadDashboard();
+            }
+        });
+        
+        // Carregar dashboard ao inicializar
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+</html>

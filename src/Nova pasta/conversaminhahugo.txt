@@ -1,0 +1,111 @@
+Ele manda o arquivo lista15102025082509.xlsx e falamos:
+
+
+[15:35, 16/10/2025] Hugo: Manipular isso aí. 
+A pessoa faz um upload 
+São várias paginas 
+1 - um mapa com os dados do arquivo de geomarketing para a pessoa. 
+Nego vai lá e pode usar para vendendor ver onde ir 
+Ou pode usar para abrir franquia 
+Etc. 
+isso aí seria sem cadastro de inicial 
+2 - Dashboard com esses dados 
+3 - manipulação usando dados 
+Enviar e-mail para esses e-mails, pessoa joga essa relação e recebe opção de mandar email ou SMS 
+Junto com um crm para controle do Lead 
+Por ex… nego vai tantar vender pra essa relação 
+Aí vai colocando a evolução 
+Primeiro contato 
+Morno essas coisas estilo kanban
+[15:35, 16/10/2025] Hugo: São essas 3 coisas
+[15:35, 16/10/2025] Hugo: Utilidades de modo geral para vender para essa relação
+[15:37, 16/10/2025] Diego F: Feshow. Terminando te mand
+[15:41, 16/10/2025] Diego F: Eu n consigo abrir aqui agora mas essa lista tem todos os dados necessarios?
+[15:41, 16/10/2025] Hugo: Sim
+[15:41, 16/10/2025] Diego F: Eu n consigo abrir aqui agora mas essa lista tem todos os dados necessarios?
+[15:41, 16/10/2025] Hugo: Sim
+[15:41, 16/10/2025] Diego F: Geomarketing tb?
+[15:41, 16/10/2025] Hugo: Tudo q c precisa tá ai
+[15:41, 16/10/2025] Hugo: Sim, mas é um outro site
+[15:41, 16/10/2025] Diego F: Tem id tb
+[15:41, 16/10/2025] Diego F: Ok
+
+Áudio: a idea é o geomaketing pra uma outra coisa.. então a pessoa joga o csv, sem cadastro sem nada ela simula uma coisa pra geomarketing, tanto pra str, por ai vai... o principal mesmo que eu acho que é top, isso aqui q te falei: manipulação dos dados telefone com crm, estilo kanbam
+
+[15:42, 16/10/2025] Diego F: Prefere python ou node?
+[15:42, 16/10/2025] Diego F: Node / php
+[15:42, 16/10/2025] Hugo: Prefiro php né
+[15:42, 16/10/2025] Diego F: Node de boa tb?
+[15:42, 16/10/2025] Hugo: Mas pode ser qualquer uma
+[15:42, 16/10/2025] Hugo: Sim
+[15:43, 16/10/2025] Hugo: Tem que ser de boa de rodar on-line né
+[15:43, 16/10/2025] Hugo: Sem atrapalhar meu servidor
+[15:43, 16/10/2025] Hugo: Acho que em py seria mais fácil né
+[15:44, 16/10/2025] Diego F: O geomarketing se n tiver da pra att pelas coordenadas obtidas né
+[15:44, 16/10/2025] Diego F: XD
+[15:44, 16/10/2025] Hugo: Vc usa uma api de mapa
+[15:44, 16/10/2025] Hugo: Tem vários
+[15:44, 16/10/2025] Hugo: E pega os dados
+[15:44, 16/10/2025] Hugo: De cep por ex
+[15:44, 16/10/2025] Hugo: Quando vc vê o arquivo c vai entender
+[15:44, 16/10/2025] Diego F: Sim. Da pra enriquece-lo tb
+[15:44, 16/10/2025] Hugo: Mas a princípio será sem cadastro
+[15:45, 16/10/2025] Hugo: Mais on-line mesmo
+[15:45, 16/10/2025] Hugo: Só para validar
+[15:45, 16/10/2025] Hugo: Se validar aí faz algo mais profissional
+[15:45, 16/10/2025] Hugo: Isso aí é aleatório a princípio
+[15:45, 16/10/2025] Hugo: Vai ter uma url que nego vai jogar essa relação
+[15:45, 16/10/2025] Hugo: E aparecer o mapa
+[15:45, 16/10/2025] Hugo: É só
+[15:45, 16/10/2025] Hugo: O outro lá que é o mais legal a princípio
+[15:45, 16/10/2025] Hugo: Para o e-mail usar o sparkpost
+[15:46, 16/10/2025] Hugo: Tem api dev de graça
+[15:46, 16/10/2025] Diego F: Python é melhor pra mais dados né
+[15:46, 16/10/2025] Hugo: Pode ter 1000 resultados
+[15:46, 16/10/2025] Diego F: Com Pandas
+[15:46, 16/10/2025] Hugo: A 1 milhão
+[15:46, 16/10/2025] Diego F: Entao py
+[15:46, 16/10/2025] Diego F: Kappa
+[15:46, 16/10/2025] Hugo: Faz com calma
+[15:47, 16/10/2025] Hugo: Trocando ideia
+[15:47, 16/10/2025] Hugo: Pq precisa funcionar online
+[15:47, 16/10/2025] Hugo: Na teoria e no pc
+[15:47, 16/10/2025] Hugo: Aceita tudo
+[15:47, 16/10/2025] Diego F: Com bd temporário
+[15:47, 16/10/2025] Hugo: Ou manipulação de texto mesmo
+[15:47, 16/10/2025] Hugo: Tem 100 formas de fazer
+[15:47, 16/10/2025] Hugo: Pode ser até leitura do csv
+[15:48, 16/10/2025] Hugo: Ou quando upar o arquivo transformar em outro formato
+[15:48, 16/10/2025] Hugo: Tem mt jeito de fazer
+[15:48, 16/10/2025] Hugo: Principal eh funcionar online
+[15:48, 16/10/2025] Hugo: Sem chance de erro
+[15:48, 16/10/2025] Diego F: Projetinho legal de fazer kkk
+[15:48, 16/10/2025] Hugo: E rodar em vários tipos de servidor
+[15:48, 16/10/2025] Hugo: Sem preocupação em dependências
+[15:49, 16/10/2025] Hugo: Qualquer serviço q c precisar c me fala
+[15:49, 16/10/2025] Diego F: Vou modelar ele certinho
+[15:50, 16/10/2025] Diego F: Conteinizado em docker pra portabilidade
+[15:50, 16/10/2025] Hugo: Ah
+[15:50, 16/10/2025] Hugo: Mysql 5.6
+[15:50, 16/10/2025] Diego F: Credo
+[15:50, 16/10/2025] Diego F: Kkkk
+[15:50, 16/10/2025] Hugo: Tem q funcionar nesse banco
+[15:51, 16/10/2025] Diego F: Eu entendi
+[15:51, 16/10/2025] Diego F: Mas sql é podre
+[15:51, 16/10/2025] Diego F: Pra fazer a integracao
+[15:51, 16/10/2025] Diego F: Maas
+[15:51, 16/10/2025] Diego F: É isso
+[15:51, 16/10/2025] Hugo: Se bem que pode ser Mariadb tb
+[15:51, 16/10/2025] Diego F: Se usa mysql de base ?
+[15:52, 16/10/2025] Hugo: Sim
+[15:52, 16/10/2025] Hugo: Já testei tudo
+[15:52, 16/10/2025] Hugo: No meu caso só myisan resolve
+[15:53, 16/10/2025] Diego F: N tem mt suporte pra geospacial comparado com postegree pesquisando aqui
+[15:53, 16/10/2025] Hugo: Não consigo leitura apenas mais rápido
+[15:53, 16/10/2025] Hugo: Que myisan
+[15:53, 16/10/2025] Hugo: Por consequência mysql
+[15:54, 16/10/2025] Hugo: Enfim
+[15:54, 16/10/2025] Hugo: Vai desembolando aí
+[15:54, 16/10/2025] Hugo: E me falando as coisas que vai precisar
+[15:54, 16/10/2025] Hugo: As versões dos trem que usar
+[15:54, 16/10/2025] Hugo: Pra eu ver se roda

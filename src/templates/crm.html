@@ -1,0 +1,2428 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Pipeline - CRM Pro Geomarketing</title>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-brand {
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .nav-links {
+            display: flex;
+            margin-left: auto;
+        }
+        
+        .nav-link {
+            padding: 20px 25px;
+            text-decoration: none;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-link:hover {
+            background: #f8f9fa;
+            color: #007bff;
+        }
+        
+        .nav-link.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .page-header {
+            margin-bottom: 30px;
+        }
+        
+        .upload-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        
+        .upload-area:hover {
+            border-color: #007bff;
+            background: #f8f9fa;
+        }
+        
+        .upload-area.dragover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        /* Toolbar Profissional */
+        .crm-toolbar {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+        
+        .toolbar-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .toolbar-section:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .section-header {
+            margin-bottom: 12px;
+        }
+        
+        .section-header h5 {
+            color: #495057;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Filtros */
+        .filter-controls {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            align-items: end;
+        }
+        
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-item label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        .form-control.compact {
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            transition: all 0.2s ease;
+        }
+        
+        .form-control.compact:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+        }
+        
+        /* Botões de Ação */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .btn-icon .icon {
+            font-size: 16px;
+        }
+        
+        .btn-icon:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Exportação */
+        .export-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-outline-success {
+            border: 1px solid #28a745;
+            color: #28a745;
+            background: white;
+        }
+        
+        .btn-outline-success:hover {
+            background: #28a745;
+            color: white;
+        }
+        
+        /* Campanhas */
+        .campaign-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* Barra de Seleção */
+        .selection-bar {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .selection-info {
+            color: #856404;
+            font-weight: 500;
+        }
+        
+        .selection-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .filter-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .crm-toolbar {
+                padding: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn-icon {
+                justify-content: center;
+            }
+            
+            .selection-bar {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+        
+        .page-title {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .page-subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .pipeline-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-badge {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        
+        .stat-badge.novo .stat-number { color: #6c757d; }
+        .stat-badge.contato .stat-number { color: #007bff; }
+        .stat-badge.negociacao .stat-number { color: #ffc107; }
+        .stat-badge.fechado .stat-number { color: #28a745; }
+        .stat-badge.perdido .stat-number { color: #dc3545; }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-group label {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-control {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover { background: #0056b3; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-success { background: #28a745; }
+        .btn-success:hover { background: #218838; }
+        
+        .companies-grid {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .companies-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .companies-table th,
+        .companies-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .companies-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .companies-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        
+        .status-novo { background: #e9ecef; color: #495057; }
+        .status-contato { background: #cce5ff; color: #004085; }
+        .status-negociacao { background: #fff3cd; color: #856404; }
+        .status-fechado { background: #d4edda; color: #155724; }
+        .status-perdido { background: #f8d7da; color: #721c24; }
+        
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .no-data h3 {
+            margin-bottom: 15px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            margin: 0;
+            color: #333;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 3px;
+            font-weight: 500;
+            color: #333;
+            font-size: 13px;
+        }
+        
+        .form-group select,
+        .form-group textarea,
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        
+        .form-group small {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+            display: block;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        /* Filtros próximos à tabela */
+        .table-filters {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filters-left {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .filters-center {
+            display: flex;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .filters-right {
+            display: flex;
+            justify-content: flex-end;
+            flex: 1;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-item label {
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        
+        .export-section-inline,
+        .campaigns-section-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .export-section-inline label,
+        .campaigns-section-inline label {
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        
+        .export-buttons-inline,
+        .campaign-buttons-inline {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .export-buttons-inline .btn,
+        .campaign-buttons-inline .btn {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+        
+        /* Ícones elegantes */
+        .icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            text-align: center;
+            line-height: 16px;
+            font-size: 14px;
+            margin-right: 6px;
+            color: inherit;
+            font-weight: bold;
+        }
+        
+        .icon-excel {
+            color: #217346;
+        }
+        
+        .icon-csv {
+            color: #d83b01;
+        }
+        
+        .icon-email {
+            color: #0078d4;
+        }
+        
+        .icon-sms {
+            color: #ff8c00;
+        }
+        
+        /* Corrigir contraste dos ícones em botões coloridos */
+        .btn-info .icon-email,
+        .btn-info .icon-sms {
+            color: white;
+        }
+        
+        /* Radio buttons profissionais */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #fafafa;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .radio-option:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        
+        .radio-option input[type="radio"] {
+            margin: 0;
+            cursor: pointer;
+        }
+        
+        .radio-option label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+            color: #333;
+            flex: 1;
+        }
+        
+        .radio-option input[type="radio"]:checked + label,
+        .radio-option:has(input[type="radio"]:checked) {
+            background: #e3f2fd;
+            border-color: #007bff;
+        }
+        
+        .radio-option:has(input[type="radio"]:checked) label {
+            color: #007bff;
+            font-weight: 600;
+        }
+        
+        .icon-add {
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .icon-save {
+            color: #fff;
+        }
+        
+        .icon-delete {
+            color: #fff;
+        }
+        
+        .icon-undo {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">CRM Pro</div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Geomarketing</a>
+                <a href="/crm" class="nav-link active">CRM Pipeline</a>
+                <a href="/dashboard" class="nav-link">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">CRM Pipeline</h1>
+            <p class="page-subtitle">Gestão de leads e funil de vendas</p>
+        </div>
+        
+        <div class="upload-section">
+            <h3>Upload de Lista de Empresas</h3>
+            <p>Carregue uma nova lista ou use os dados já carregados</p>
+            
+            <div class="upload-area" id="uploadArea">
+                <div id="uploadContent">
+                    <h4>Arraste um arquivo aqui ou clique para selecionar</h4>
+                    <p>Formatos: .xlsx, .xls, .csv | Máximo: 100MB</p>
+                    <button type="button" class="btn" onclick="document.getElementById('fileInput').click()">
+                        Selecionar Arquivo
+                    </button>
+                </div>
+                <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls">
+            </div>
+            
+            <div class="loading" id="loading" style="display: none;">
+                <h4>Processando arquivo...</h4>
+                <p>Carregando dados para o CRM...</p>
+            </div>
+            
+            <div id="alerts"></div>
+        </div>
+        
+        <div id="loadingSection" class="loading">
+            <h3>Carregando dados do CRM...</h3>
+        </div>
+        
+        
+        <div id="crmContent" style="display: none;">
+            <div class="pipeline-stats" id="pipelineStats">
+                <!-- Stats serão carregadas via JS -->
+            </div>
+            
+            <!-- Toolbar Principal - Somente Gestão de Dados -->
+            <div class="crm-toolbar">
+                <!-- Seção de Ações de Dados -->
+                <div class="toolbar-section data-actions-section">
+                    <div class="section-header">
+                        <h5><i class="icon-database"></i> Gestão de Dados</h5>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-icon" onclick="openAddCompanyModal()">
+                            <span class="icon icon-add">+</span> Nova Empresa
+                        </button>
+                        <button class="btn btn-success btn-icon" onclick="saveData()">
+                            <span class="icon icon-save">⚈</span> Salvar
+                        </button>
+                        <button class="btn btn-danger btn-icon" onclick="clearAllData()">
+                            <span class="icon icon-delete">⚌</span> Limpar
+                        </button>
+                        <button class="btn btn-secondary btn-icon" onclick="undoLastAction()">
+                            <span class="icon icon-undo">↶</span> Desfazer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtros próximos à tabela com Campanhas e Exportar -->
+            <div class="table-filters">
+                <div class="filters-left">
+                    <div class="filter-item">
+                        <label>Status:</label>
+                        <select id="statusFilter" class="form-control compact">
+                            <option value="">Todos os status</option>
+                            <option value="nao_contactado">Não Contactado</option>
+                            <option value="email_enviado">E-mail Enviado</option>
+                            <option value="sms_enviado">SMS Enviado</option>
+                            <option value="email_sms_enviados">E-mail e SMS Enviados</option>
+                            <option value="negociacao">Negociando</option>
+                            <option value="fechado">Fechado</option>
+                            <option value="perdido">Perdido</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>Buscar:</label>
+                        <input type="text" id="searchFilter" class="form-control compact" placeholder="Nome, email ou telefone...">
+                    </div>
+                </div>
+                
+                <div class="filters-center">
+                    <div class="export-section-inline">
+                        <label>Exportar:</label>
+                        <div class="export-buttons-inline">
+                            <button class="btn btn-outline-success btn-sm" onclick="exportExcel()">
+                                <span class="icon icon-excel">⚏</span> Excel
+                            </button>
+                            <button class="btn btn-outline-success btn-sm" onclick="exportCSV()">
+                                <span class="icon icon-csv">⚇</span> CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filters-right">
+                    <div class="campaigns-section-inline">
+                        <label>Campanhas:</label>
+                        <div class="campaign-buttons-inline">
+                            <button class="btn btn-info btn-sm" onclick="openEmailCampaignModal()">
+                                <span class="icon icon-email">✉</span> Email
+                            </button>
+                            <button class="btn btn-info btn-sm" onclick="openSMSCampaignModal()">
+                                <span class="icon icon-sms">⚡</span> SMS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barra de Seleção (aparece quando necessário) -->
+            <div class="selection-bar" id="selectionBar" style="display: none;">
+                <div class="selection-info">
+                    <strong id="selectedCount">0</strong> empresas selecionadas
+                </div>
+                <div class="selection-actions">
+                    <button class="btn btn-sm btn-outline-primary" onclick="selectAll()">Selecionar Todas</button>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="clearSelection()">Limpar Seleção</button>
+                    <button class="btn btn-sm btn-warning" onclick="openBulkEditModal()" id="bulkEditBtn">Editar em Massa</button>
+                </div>
+            </div>
+            
+            <div class="companies-grid">
+                <table class="companies-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllCheck" onchange="toggleSelectAll()"></th>
+                            <th>Empresa</th>
+                            <th>Contato</th>
+                            <th>Localização</th>
+                            <th>Status</th>
+                            <th>Último Contato</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companiesTableBody">
+                        <!-- Dados serão carregados via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para editar empresa -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Status</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="newStatus">Status:</label>
+                    <select id="newStatus" class="form-control" required>
+                        <option value="nao_contactado">Não Contactado</option>
+                        <option value="email_enviado">E-mail Enviado</option>
+                        <option value="sms_enviado">SMS Enviado</option>
+                        <option value="email_sms_enviados">E-mail e SMS Enviados</option>
+                        <option value="negociacao">Negociando</option>
+                        <option value="fechado">Fechado</option>
+                        <option value="perdido">Perdido</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Observações:</label>
+                    <textarea id="notes" class="form-control" placeholder="Adicione observações sobre o contato..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para campanha de email -->
+    <div id="emailCampaignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Campanha de Email</h3>
+                <button class="close" onclick="closeEmailCampaignModal()">&times;</button>
+            </div>
+            
+            <form id="emailCampaignForm">
+                <div class="form-group">
+                    <label for="emailTemplate">Template:</label>
+                    <select id="emailTemplate" class="form-control" required>
+                        <option value="">Selecione um template...</option>
+                        <option value="prospeccao_inicial">Prospecção Inicial</option>
+                        <option value="follow_up">Follow-up</option>
+                        <option value="proposta_comercial">Proposta Comercial</option>
+                    </select>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="senderName">Seu Nome:</label>
+                        <input type="text" id="senderName" class="form-control" placeholder="João Silva" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="senderCompany">Sua Empresa:</label>
+                        <input type="text" id="senderCompany" class="form-control" placeholder="Sua Empresa LTDA" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="senderEmail">Seu Email:</label>
+                        <input type="email" id="senderEmail" class="form-control" placeholder="joao@empresa.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="senderPhone">Seu Telefone:</label>
+                        <input type="text" id="senderPhone" class="form-control" placeholder="(11) 99999-9999">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="emailCustomMessage">Observações personalizadas (opcional):</label>
+                    <textarea id="emailCustomMessage" class="form-control" placeholder="Texto adicional para incluir no email..." rows="3"></textarea>
+                    <small>Este texto será adicionado no final do template selecionado</small>
+                </div>
+                
+                <!-- Seção de confirmação de destinatários -->
+                <div class="form-group" style="background: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px solid #e9ecef;">
+                    <label style="font-weight: bold; color: #495057;">📧 Destinatários da Campanha:</label>
+                    <div id="emailRecipientsPreview" style="margin-top: 10px; max-height: 200px; overflow-y: auto;">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                    <div id="emailRecipientsCount" style="margin-top: 10px; font-weight: bold; color: #007bff;">
+                        <!-- Contador será preenchido via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEmailCampaignModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Enviar Campanha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para campanha de SMS -->
+    <div id="smsCampaignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Campanha de SMS</h3>
+                <button class="close" onclick="closeSMSCampaignModal()">&times;</button>
+            </div>
+            
+            <form id="smsCampaignForm">
+                <div class="form-group">
+                    <label for="smsTemplate">Template:</label>
+                    <select id="smsTemplate" class="form-control" required>
+                        <option value="">Selecione um template...</option>
+                        <option value="prospeccao_inicial">Prospecção Inicial</option>
+                        <option value="follow_up">Follow-up</option>
+                        <option value="agendamento">Agendamento</option>
+                        <option value="proposta_enviada">Proposta Enviada</option>
+                    </select>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="smsSenderName">Seu Nome:</label>
+                        <input type="text" id="smsSenderName" class="form-control" placeholder="João Silva" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smsSenderCompany">Sua Empresa:</label>
+                        <input type="text" id="smsSenderCompany" class="form-control" placeholder="Sua Empresa LTDA" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="smsSenderPhone">Seu Telefone:</label>
+                    <input type="text" id="smsSenderPhone" class="form-control" placeholder="(11) 99999-9999" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="smsCustomMessage">Observações personalizadas (opcional):</label>
+                    <textarea id="smsCustomMessage" class="form-control" placeholder="Texto adicional para incluir no SMS..." rows="2" maxlength="100"></textarea>
+                    <small>Será adicionado no final do template (máx. 100 caracteres)</small>
+                </div>
+                
+                <!-- Seção de confirmação de destinatários -->
+                <div class="form-group" style="background: #f8f9fa; padding: 15px; border-radius: 5px; border: 1px solid #e9ecef;">
+                    <label style="font-weight: bold; color: #495057;">📱 Destinatários da Campanha:</label>
+                    <div id="smsRecipientsPreview" style="margin-top: 10px; max-height: 200px; overflow-y: auto;">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                    <div id="smsRecipientsCount" style="margin-top: 10px; font-weight: bold; color: #28a745;">
+                        <!-- Contador será preenchido via JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeSMSCampaignModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Enviar Campanha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para edição em massa -->
+    <div id="bulkEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Empresas Selecionadas</h3>
+                <button class="close" onclick="closeBulkEditModal()">&times;</button>
+            </div>
+            
+            <form id="bulkEditForm">
+                <div class="form-group">
+                    <label>Empresas selecionadas: <strong><span id="bulkEditCount">0</span></strong></label>
+                    <div id="selectedCompaniesList" style="max-height: 150px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin: 10px 0; background: #f8f9fa;">
+                        <!-- Lista será preenchida via JS -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bulkNewStatus">Alterar status para:</label>
+                    <select id="bulkNewStatus" class="form-control" required>
+                        <option value="">Selecione novo status...</option>
+                        <option value="nao_contactado">Não Contactado</option>
+                        <option value="email_enviado">E-mail Enviado</option>
+                        <option value="sms_enviado">SMS Enviado</option>
+                        <option value="email_sms_enviados">E-mail e SMS Enviados</option>
+                        <option value="negociacao">Negociando</option>
+                        <option value="fechado">Fechado</option>
+                        <option value="perdido">Perdido</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bulkNotes">Observações (será adicionada a todas):</label>
+                    <textarea id="bulkNotes" class="form-control" placeholder="Observação que será aplicada a todas as empresas selecionadas..." rows="3"></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeBulkEditModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Aplicar a Todas</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para adicionar nova empresa -->
+    <div id="addCompanyModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Inserir Nova Empresa</h3>
+                <button class="close" onclick="closeAddCompanyModal()">&times;</button>
+            </div>
+            
+            <form id="addCompanyForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label for="newCnpj">CNPJ:</label>
+                        <input type="text" id="newCnpj" class="form-control" placeholder="00.000.000/0000-00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newRazaoSocial">Razão Social: <span style="color: red;">*</span></label>
+                        <input type="text" id="newRazaoSocial" class="form-control" placeholder="Nome da empresa" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newNomeFantasia">Nome Fantasia:</label>
+                        <input type="text" id="newNomeFantasia" class="form-control" placeholder="Nome fantasia">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newSituacao">Situação:</label>
+                        <select id="newSituacao" class="form-control">
+                            <option value="ATIVA">Ativa</option>
+                            <option value="INATIVA">Inativa</option>
+                            <option value="SUSPENSA">Suspensa</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newCep">CEP:</label>
+                        <input type="text" id="newCep" class="form-control" placeholder="00000-000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newUf">UF:</label>
+                        <input type="text" id="newUf" class="form-control" placeholder="SP" maxlength="2">
+                    </div>
+                    
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="newEnderecoCompleto">Endereço Completo:</label>
+                        <input type="text" id="newEnderecoCompleto" class="form-control" placeholder="Rua, número, bairro, cidade">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newMunicipio">Município:</label>
+                        <input type="text" id="newMunicipio" class="form-control" placeholder="São Paulo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newBairro">Bairro:</label>
+                        <input type="text" id="newBairro" class="form-control" placeholder="Centro">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newTelefone1">Telefone 1:</label>
+                        <input type="text" id="newTelefone1" class="form-control" placeholder="(11) 99999-9999">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newTelefone2">Telefone 2:</label>
+                        <input type="text" id="newTelefone2" class="form-control" placeholder="(11) 3333-3333">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newEmail">E-mail:</label>
+                        <input type="email" id="newEmail" class="form-control" placeholder="contato@empresa.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPorte">Porte:</label>
+                        <select id="newPorte" class="form-control">
+                            <option value="">Selecione...</option>
+                            <option value="MICRO">Micro</option>
+                            <option value="PEQUENO">Pequeno</option>
+                            <option value="MEDIO">Médio</option>
+                            <option value="GRANDE">Grande</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newCnae">CNAE:</label>
+                        <input type="text" id="newCnae" class="form-control" placeholder="0000-0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newRamoAtividade">Ramo de Atividade:</label>
+                        <input type="text" id="newRamoAtividade" class="form-control" placeholder="Serviços">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newCapitalSocial">Capital Social:</label>
+                        <input type="number" id="newCapitalSocial" class="form-control" placeholder="0.00" step="0.01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="newMei"> MEI (Microempreendedor Individual)
+                        </label>
+                    </div>
+                    
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="newObservacoes">Observações:</label>
+                        <textarea id="newObservacoes" class="form-control" placeholder="Observações sobre a empresa..." rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeAddCompanyModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Adicionar Empresa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let companies = [];
+        let filteredCompanies = [];
+        let currentEditingIndex = -1;
+        let selectedCompanies = new Set();
+        let savedState = null; // Estado salvo para desfazer
+        let hasUnsavedChanges = false; // Flag para alterações não salvas
+        
+        // Carregar dados do CRM
+        async function loadCrmData() {
+            try {
+                const [companiesResponse, statsResponse] = await Promise.all([
+                    fetch('/api/crm/companies'),
+                    fetch('/api/crm/stats')
+                ]);
+                
+                const companiesData = await companiesResponse.json();
+                const statsData = await statsResponse.json();
+                
+                if (companiesData.error || statsData.error) {
+                    showNoData();
+                    return;
+                }
+                
+                companies = companiesData.companies;
+                filteredCompanies = [...companies];
+                
+                hideLoading();
+                populateStats(statsData);
+                renderCompaniesTable();
+                
+            } catch (error) {
+                console.error('Erro ao carregar CRM:', error);
+                showError('Erro ao carregar dados do CRM');
+            }
+        }
+        
+        function hideLoading() {
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('crmContent').style.display = 'block';
+        }
+        
+        function showNoData() {
+            document.getElementById('loadingSection').style.display = 'none';
+            // Sem dados - apenas esconder loading
+        }
+        
+        function showError(message) {
+            document.getElementById('loadingSection').innerHTML = `
+                <div style="color: #dc3545;">${message}</div>
+            `;
+        }
+        
+        function populateStats(statsData) {
+            const statsContainer = document.getElementById('pipelineStats');
+            const statusLabels = {
+                'novo': 'Novos',
+                'contato': 'Contatados',
+                'negociacao': 'Negociando',
+                'fechado': 'Fechados',
+                'perdido': 'Perdidos'
+            };
+            
+            let statsHtml = '';
+            
+            for (const [status, count] of Object.entries(statsData.pipeline_counts)) {
+                statsHtml += `
+                    <div class="stat-badge ${status}">
+                        <div class="stat-number">${count}</div>
+                        <div class="stat-label">${statusLabels[status] || status}</div>
+                    </div>
+                `;
+            }
+            
+            statsContainer.innerHTML = statsHtml;
+        }
+        
+        function renderCompaniesTable() {
+            const tbody = document.getElementById('companiesTableBody');
+            let html = '';
+            
+            filteredCompanies.forEach((company, index) => {
+                const originalIndex = companies.indexOf(company);
+                const statusClass = `status-${company.pipeline_status}`;
+                const lastContact = company.last_contact 
+                    ? new Date(company.last_contact).toLocaleDateString('pt-BR')
+                    : 'Nunca';
+                
+                html += `
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="company-checkbox" data-index="${originalIndex}" 
+                                   ${selectedCompanies.has(originalIndex) ? 'checked' : ''} 
+                                   onchange="toggleCompanySelection(${originalIndex})">
+                        </td>
+                        <td>
+                            <strong>${company.razao_social}</strong><br>
+                            <small>${company.porte || 'N/A'}</small>
+                        </td>
+                        <td>
+                            ${company.email || 'N/A'}<br>
+                            <small>${company.telefone1 || 'N/A'}</small>
+                        </td>
+                        <td>
+                            ${company.municipio || 'N/A'} - ${company.uf || 'N/A'}<br>
+                            <small>CEP: ${company.cep || 'N/A'}</small>
+                        </td>
+                        <td>
+                            <span class="status-badge ${statusClass}">
+                                ${getStatusLabel(company.pipeline_status)}
+                            </span>
+                        </td>
+                        <td>${lastContact}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn btn-sm btn-primary" onclick="editCompanyStatus(${originalIndex})" title="Editar apenas status e observações">
+                                    Editar Status
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="editCompanyData(${originalIndex})" title="Editar todos os dados da empresa">
+                                    Editar Dados
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function getStatusLabel(status) {
+            const labels = {
+                'nao_contactado': 'Não Contactado',
+                'email_enviado': 'E-mail Enviado',
+                'sms_enviado': 'SMS Enviado',
+                'email_sms_enviados': 'E-mail e SMS Enviados',
+                'negociacao': 'Negociando',
+                'fechado': 'Fechado',
+                'perdido': 'Perdido'
+            };
+            return labels[status] || status;
+        }
+        
+        function editCompanyStatus(index) {
+            currentEditingIndex = index;
+            const company = companies[index];
+            
+            document.getElementById('newStatus').value = company.pipeline_status;
+            document.getElementById('notes').value = company.observacoes || '';
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        function editCompanyData(index) {
+            currentEditingIndex = index;
+            const company = companies[index];
+            
+            // Preencher formulário de edição completa
+            document.getElementById('newCnpj').value = company.cnpj || '';
+            document.getElementById('newRazaoSocial').value = company.razao_social || '';
+            document.getElementById('newNomeFantasia').value = company.nome_fantasia || '';
+            document.getElementById('newSituacao').value = company.situacao || '';
+            document.getElementById('newCep').value = company.cep || '';
+            document.getElementById('newEnderecoCompleto').value = company.endereco_completo || '';
+            document.getElementById('newUf').value = company.uf || '';
+            document.getElementById('newMunicipio').value = company.municipio || '';
+            document.getElementById('newBairro').value = company.bairro || '';
+            document.getElementById('newTelefone1').value = company.telefone1 || '';
+            document.getElementById('newTelefone2').value = company.telefone2 || '';
+            document.getElementById('newEmail').value = company.email || '';
+            document.getElementById('newPorte').value = company.porte || '';
+            document.getElementById('newCnae').value = company.cnae || '';
+            document.getElementById('newRamoAtividade').value = company.ramo_atividade || '';
+            document.getElementById('newCapitalSocial').value = company.capital_social || '';
+            document.getElementById('newMei').checked = company.mei || false;
+            document.getElementById('newObservacoes').value = company.observacoes || '';
+            
+            // Mudar título do modal
+            document.querySelector('#addCompanyModal .modal-title').textContent = 'Editar Empresa';
+            document.querySelector('#addCompanyModal button[type="submit"]').textContent = 'Salvar Alterações';
+            
+            document.getElementById('addCompanyModal').style.display = 'block';
+        }
+        
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+            currentEditingIndex = -1;
+        }
+        
+        async function saveCompanyChanges(event) {
+            event.preventDefault();
+            
+            if (currentEditingIndex === -1) return;
+            
+            const newStatus = document.getElementById('newStatus').value;
+            const notes = document.getElementById('notes').value;
+            
+            try {
+                const response = await fetch(`/api/crm/company/${currentEditingIndex}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: newStatus,
+                        notes: notes
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Atualizar dados locais
+                    companies[currentEditingIndex] = result.company;
+                    
+                    // Recarregar dados
+                    await loadCrmData();
+                    
+                    closeModal();
+                } else {
+                    alert('Erro ao salvar alterações');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                alert('Erro ao salvar alterações');
+            }
+        }
+        
+        function sendEmail(email) {
+            if (!email || email === 'N/A') {
+                alert('Email não disponível para esta empresa');
+                return;
+            }
+            
+            // Por enquanto apenas abre o cliente de email
+            window.open(`mailto:${email}?subject=Contato Comercial`);
+        }
+        
+        function exportExcel() {
+            // Criar Excel usando uma tabela HTML que pode ser aberta pelo Excel
+            let html = `
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Empresa</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>Status</th>
+                            <th>Cidade</th>
+                            <th>UF</th>
+                            <th>CEP</th>
+                            <th>Endereço</th>
+                            <th>CNPJ</th>
+                            <th>Porte</th>
+                            <th>Observações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            filteredCompanies.forEach(company => {
+                html += `
+                    <tr>
+                        <td>${company.razao_social || ''}</td>
+                        <td>${company.email || ''}</td>
+                        <td>${company.telefone1 || ''}</td>
+                        <td>${getStatusLabel(company.pipeline_status)}</td>
+                        <td>${company.municipio || ''}</td>
+                        <td>${company.uf || ''}</td>
+                        <td>${company.cep || ''}</td>
+                        <td>${company.endereco_completo || ''}</td>
+                        <td>${company.cnpj || ''}</td>
+                        <td>${company.porte || ''}</td>
+                        <td>${company.observacoes || ''}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            // Download como arquivo Excel
+            const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'crm-pipeline.xls';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        function exportCSV() {
+            // Criar CSV com todas as colunas
+            let csv = 'CNPJ,Razão Social,Nome Fantasia,Situação,CEP,Endereço Completo,UF,Município,Bairro,Telefone 1,Telefone 2,Email,Porte,CNAE,Ramo Atividade,Capital Social,MEI,Status Pipeline,Observações,Última Interação\n';
+            
+            filteredCompanies.forEach(company => {
+                const values = [
+                    company.cnpj || '',
+                    company.razao_social || '',
+                    company.nome_fantasia || '',
+                    company.situacao || '',
+                    company.cep || '',
+                    company.endereco_completo || '',
+                    company.uf || '',
+                    company.municipio || '',
+                    company.bairro || '',
+                    company.telefone1 || '',
+                    company.telefone2 || '',
+                    company.email || '',
+                    company.porte || '',
+                    company.cnae || '',
+                    company.ramo_atividade || '',
+                    company.capital_social || '',
+                    company.mei ? 'Sim' : 'Não',
+                    getStatusLabel(company.pipeline_status),
+                    company.observacoes || '',
+                    company.data_ultima_interacao || ''
+                ];
+                
+                // Escapar vírgulas e aspas no CSV
+                const escapedValues = values.map(value => {
+                    const stringValue = String(value);
+                    if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+                        return '"' + stringValue.replace(/"/g, '""') + '"';
+                    }
+                    return stringValue;
+                });
+                
+                csv += escapedValues.join(',') + '\n';
+            });
+            
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'crm-pipeline.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Filtros
+        function setupFilters() {
+            const statusFilter = document.getElementById('statusFilter');
+            const searchFilter = document.getElementById('searchFilter');
+            
+            statusFilter.addEventListener('change', applyFilters);
+            searchFilter.addEventListener('input', applyFilters);
+        }
+        
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchFilter = document.getElementById('searchFilter').value.toLowerCase();
+            
+            filteredCompanies = companies.filter(company => {
+                const matchesStatus = !statusFilter || company.pipeline_status === statusFilter;
+                const matchesSearch = !searchFilter || 
+                    company.razao_social.toLowerCase().includes(searchFilter) ||
+                    (company.email && company.email.toLowerCase().includes(searchFilter));
+                
+                return matchesStatus && matchesSearch;
+            });
+            
+            renderCompaniesTable();
+            updateCampaignCounts();
+        }
+        
+        // Funções para atualizar destinatários
+        function updateEmailRecipients() {
+            const preview = document.getElementById('emailRecipientsPreview');
+            const counter = document.getElementById('emailRecipientsCount');
+            
+            // Determinar quais empresas receberão email
+            let recipientCompanies = [];
+            
+            if (selectedCompanies.size > 0) {
+                // Usar empresas selecionadas
+                selectedCompanies.forEach(index => {
+                    const company = companies[index];
+                    if (company && company.email) {
+                        recipientCompanies.push(company);
+                    }
+                });
+            } else {
+                // Usar empresas filtradas
+                recipientCompanies = filteredCompanies.filter(company => company.email);
+            }
+            
+            // Atualizar preview
+            if (recipientCompanies.length === 0) {
+                preview.innerHTML = '<div style="color: #dc3545; font-style: italic;">❌ Nenhuma empresa com email encontrada</div>';
+                counter.innerHTML = '<span style="color: #dc3545;">0 destinatários</span>';
+            } else {
+                let html = '';
+                recipientCompanies.forEach((company, index) => {
+                    if (index < 10) { // Mostrar apenas os primeiros 10
+                        html += `<div style="padding: 5px; margin: 2px 0; background: white; border-radius: 3px; border-left: 3px solid #007bff;">
+                            <strong>${company.razao_social}</strong><br>
+                            <small style="color: #666;">📧 ${company.email}</small>
+                        </div>`;
+                    }
+                });
+                
+                if (recipientCompanies.length > 10) {
+                    html += `<div style="padding: 5px; font-style: italic; color: #666;">
+                        ... e mais ${recipientCompanies.length - 10} empresas
+                    </div>`;
+                }
+                
+                preview.innerHTML = html;
+                counter.innerHTML = `<span style="color: #007bff;">✅ ${recipientCompanies.length} destinatários válidos</span>`;
+            }
+        }
+        
+        function updateSMSRecipients() {
+            const preview = document.getElementById('smsRecipientsPreview');
+            const counter = document.getElementById('smsRecipientsCount');
+            
+            // Determinar quais empresas receberão SMS
+            let recipientCompanies = [];
+            
+            if (selectedCompanies.size > 0) {
+                // Usar empresas selecionadas
+                selectedCompanies.forEach(index => {
+                    const company = companies[index];
+                    if (company && (company.telefone1 || company.telefone2)) {
+                        recipientCompanies.push(company);
+                    }
+                });
+            } else {
+                // Usar empresas filtradas
+                recipientCompanies = filteredCompanies.filter(company => company.telefone1 || company.telefone2);
+            }
+            
+            // Atualizar preview
+            if (recipientCompanies.length === 0) {
+                preview.innerHTML = '<div style="color: #dc3545; font-style: italic;">❌ Nenhuma empresa com telefone encontrada</div>';
+                counter.innerHTML = '<span style="color: #dc3545;">0 destinatários</span>';
+            } else {
+                let html = '';
+                recipientCompanies.forEach((company, index) => {
+                    if (index < 10) { // Mostrar apenas os primeiros 10
+                        const phone = company.telefone1 || company.telefone2;
+                        html += `<div style="padding: 5px; margin: 2px 0; background: white; border-radius: 3px; border-left: 3px solid #28a745;">
+                            <strong>${company.razao_social}</strong><br>
+                            <small style="color: #666;">📱 ${phone}</small>
+                        </div>`;
+                    }
+                });
+                
+                if (recipientCompanies.length > 10) {
+                    html += `<div style="padding: 5px; font-style: italic; color: #666;">
+                        ... e mais ${recipientCompanies.length - 10} empresas
+                    </div>`;
+                }
+                
+                preview.innerHTML = html;
+                counter.innerHTML = `<span style="color: #28a745;">✅ ${recipientCompanies.length} destinatários válidos</span>`;
+            }
+        }
+        
+        // Funções do modal de campanha de email
+        function openEmailCampaignModal() {
+            // Atualizar preview de destinatários
+            updateEmailRecipients();
+            document.getElementById('emailCampaignModal').style.display = 'block';
+        }
+        
+        function closeEmailCampaignModal() {
+            document.getElementById('emailCampaignModal').style.display = 'none';
+            // Reset form
+            document.getElementById('emailCampaignForm').reset();
+        }
+        
+        function updateCampaignCounts() {
+            document.getElementById('filteredCount').textContent = filteredCompanies.length;
+            document.getElementById('smsFilteredCount').textContent = filteredCompanies.length;
+        }
+        
+        function addSelectedOption() {
+            // Mostrar opção "selecionadas" se há empresas selecionadas
+            const selectedOption = document.getElementById('selectedOption');
+            if (selectedCompanies.size > 0) {
+                selectedOption.style.display = 'block';
+            } else {
+                selectedOption.style.display = 'none';
+            }
+        }
+        
+        async function sendEmailCampaign(event) {
+            event.preventDefault();
+            console.log('Email campaign form submitted');
+            
+            const template = document.getElementById('emailTemplate').value;
+            const senderName = document.getElementById('senderName').value;
+            const senderCompany = document.getElementById('senderCompany').value;
+            const senderEmail = document.getElementById('senderEmail').value;
+            const senderPhone = document.getElementById('senderPhone').value;
+            const target = 'filtered'; // Sempre usar empresas filtradas
+            
+            if (!template) {
+                alert('Selecione um template');
+                return;
+            }
+            
+            // Determinar empresas alvo
+            let targetCompanies = [];
+            if (target === 'selected') {
+                // Empresas selecionadas manualmente
+                targetCompanies = companies.filter((_, index) => selectedCompanies.has(index));
+            } else if (target === 'filtered') {
+                targetCompanies = filteredCompanies;
+            } else if (target === 'all') {
+                targetCompanies = companies;
+            } else if (target === 'status') {
+                const targetStatus = document.getElementById('targetStatus').value;
+                targetCompanies = companies.filter(c => c.pipeline_status === targetStatus);
+            }
+            
+            // Obter IDs das empresas com email
+            const companyIds = [];
+            targetCompanies.forEach((company, index) => {
+                if (company.email) {
+                    const originalIndex = companies.indexOf(company);
+                    companyIds.push(originalIndex);
+                }
+            });
+            
+            if (companyIds.length === 0) {
+                alert('Nenhuma empresa com email encontrada no grupo selecionado');
+                return;
+            }
+            
+            // Mensagem mais clara baseada no tipo de seleção
+            let confirmMessage = '';
+            if (target === 'selected') {
+                confirmMessage = `Enviar campanha de EMAIL para ${companyIds.length} empresas SELECIONADAS?`;
+            } else if (target === 'filtered') {
+                confirmMessage = `Enviar campanha de EMAIL para ${companyIds.length} empresas filtradas?`;
+            } else if (target === 'all') {
+                confirmMessage = `Enviar campanha de EMAIL para TODAS as ${companyIds.length} empresas?`;
+            } else {
+                confirmMessage = `Enviar campanha de EMAIL para ${companyIds.length} empresas?`;
+            }
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/email/campaign', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        template_type: template,
+                        company_ids: companyIds,
+                        sender_name: senderName,
+                        sender_company: senderCompany,
+                        sender_email: senderEmail,
+                        sender_phone: senderPhone
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`Campanha enviada! ${result.accepted} emails aceitos, ${result.rejected} rejeitados`);
+                    closeEmailCampaignModal();
+                    // Recarregar dados para mostrar status atualizado
+                    await loadCrmData();
+                    // Limpar seleções após envio
+                    clearSelection();
+                } else {
+                    alert(`Erro: ${result.error}`);
+                }
+                
+            } catch (error) {
+                alert(`Erro de comunicação: ${error.message}`);
+            }
+        }
+        
+        // Funções de seleção de empresas
+        function toggleCompanySelection(index) {
+            if (selectedCompanies.has(index)) {
+                selectedCompanies.delete(index);
+            } else {
+                selectedCompanies.add(index);
+            }
+            updateSelectedCount();
+            updateSelectionBar();
+            updateSelectAllCheckbox();
+        }
+        
+        function selectAll() {
+            filteredCompanies.forEach(company => {
+                const originalIndex = companies.indexOf(company);
+                selectedCompanies.add(originalIndex);
+            });
+            document.getElementById('selectAllCheck').checked = true;
+            renderCompaniesTable();
+            updateSelectedCount();
+            updateSelectionBar();
+            updateSelectAllCheckbox();
+        }
+        
+        function clearSelection() {
+            selectedCompanies.clear();
+            document.getElementById('selectAllCheck').checked = false;
+            renderCompaniesTable();
+            updateSelectedCount();
+            updateSelectionBar();
+            updateSelectAllCheckbox();
+        }
+        
+        function updateSelectionBar() {
+            const selectionBar = document.getElementById('selectionBar');
+            if (selectedCompanies.size > 0) {
+                selectionBar.style.display = 'flex';
+            } else {
+                selectionBar.style.display = 'none';
+            }
+        }
+        
+        function toggleSelectAll() {
+            const checkbox = document.getElementById('selectAllCheck');
+            if (checkbox.checked) {
+                selectAll();
+            } else {
+                clearSelection();
+            }
+        }
+        
+        function updateSelectedCount() {
+            document.getElementById('selectedCount').textContent = selectedCompanies.size;
+            document.getElementById('smsSelectedCount').textContent = selectedCompanies.size;
+            document.getElementById('emailSelectedCount').textContent = selectedCompanies.size;
+            
+            // Mostrar/esconder botão de edição em massa
+            const bulkEditBtn = document.getElementById('bulkEditBtn');
+            if (selectedCompanies.size > 0) {
+                bulkEditBtn.style.display = 'inline-block';
+            } else {
+                bulkEditBtn.style.display = 'none';
+            }
+            
+            // Mostrar/esconder opções de seleção nos modais
+            addSelectedOption();
+        }
+        
+        function updateSelectAllCheckbox() {
+            const selectAllCheck = document.getElementById('selectAllCheck');
+            const totalFiltered = filteredCompanies.length;
+            
+            if (totalFiltered === 0) {
+                selectAllCheck.checked = false;
+                selectAllCheck.indeterminate = false;
+            } else {
+                // Contar quantas empresas filtradas estão selecionadas
+                let selectedFilteredCount = 0;
+                filteredCompanies.forEach(company => {
+                    const originalIndex = companies.indexOf(company);
+                    if (selectedCompanies.has(originalIndex)) {
+                        selectedFilteredCount++;
+                    }
+                });
+                
+                if (selectedFilteredCount === 0) {
+                    selectAllCheck.checked = false;
+                    selectAllCheck.indeterminate = false;
+                } else if (selectedFilteredCount === totalFiltered) {
+                    selectAllCheck.checked = true;
+                    selectAllCheck.indeterminate = false;
+                } else {
+                    selectAllCheck.checked = false;
+                    selectAllCheck.indeterminate = true;
+                }
+            }
+        }
+        
+        // Funções do modal de SMS
+        function openSMSCampaignModal() {
+            // Atualizar preview de destinatários
+            updateSMSRecipients();
+            document.getElementById('smsCampaignModal').style.display = 'block';
+        }
+        
+        function closeSMSCampaignModal() {
+            document.getElementById('smsCampaignModal').style.display = 'none';
+            // Reset form
+            document.getElementById('smsCampaignForm').reset();
+        }
+        
+        function updateSMSCounts() {
+            document.getElementById('smsSelectedCount').textContent = selectedCompanies.size;
+            document.getElementById('smsFilteredCount').textContent = filteredCompanies.length;
+            document.getElementById('smsTotalCount').textContent = companies.length;
+        }
+        
+        async function sendSMSCampaign(event) {
+            event.preventDefault();
+            console.log('SMS campaign form submitted');
+            
+            const template = document.getElementById('smsTemplate').value;
+            const senderName = document.getElementById('smsSenderName').value;
+            const senderCompany = document.getElementById('smsSenderCompany').value;
+            const senderPhone = document.getElementById('smsSenderPhone').value;
+            const customMessage = document.getElementById('smsCustomMessage').value;
+            const smsTargetRadio = document.getElementById('sms-target-filtered');
+            const target = smsTargetRadio ? smsTargetRadio.value : 'filtered';
+            
+            if (!template) {
+                alert('Selecione um template');
+                return;
+            }
+            
+            // Determinar empresas alvo
+            let targetCompanies = [];
+            if (target === 'selected') {
+                targetCompanies = companies.filter((_, index) => selectedCompanies.has(index));
+            } else if (target === 'filtered') {
+                targetCompanies = filteredCompanies;
+            } else if (target === 'all') {
+                targetCompanies = companies;
+            }
+            
+            // Obter IDs das empresas com telefone
+            const companyIds = [];
+            targetCompanies.forEach((company, index) => {
+                if (company.telefone1 || company.telefone2) {
+                    const originalIndex = companies.indexOf(company);
+                    companyIds.push(originalIndex);
+                }
+            });
+            
+            if (companyIds.length === 0) {
+                alert('Nenhuma empresa com telefone encontrada no grupo selecionado');
+                return;
+            }
+            
+            // Mensagem mais clara baseada no tipo de seleção
+            let confirmMessage = '';
+            if (target === 'selected') {
+                confirmMessage = `Enviar campanha de SMS para ${companyIds.length} empresas SELECIONADAS?`;
+            } else if (target === 'filtered') {
+                confirmMessage = `Enviar campanha de SMS para ${companyIds.length} empresas filtradas?`;
+            } else if (target === 'all') {
+                confirmMessage = `Enviar campanha de SMS para TODAS as ${companyIds.length} empresas?`;
+            } else {
+                confirmMessage = `Enviar campanha de SMS para ${companyIds.length} empresas?`;
+            }
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                const payload = {
+                    template_type: template,
+                    company_ids: companyIds,
+                    sender_name: senderName,
+                    sender_company: senderCompany,
+                    sender_phone: senderPhone
+                };
+                
+                if (customMessage) {
+                    payload.custom_message = customMessage;
+                }
+                
+                const response = await fetch('/api/sms/campaign', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`Campanha SMS enviada! ${result.total_sent} enviados, ${result.total_failed} falharam`);
+                    closeSMSCampaignModal();
+                    // Recarregar dados para mostrar status atualizado
+                    await loadCrmData();
+                    // Limpar seleções após envio
+                    clearSelection();
+                } else {
+                    alert(`Erro: ${result.error}`);
+                }
+                
+            } catch (error) {
+                alert(`Erro de comunicação: ${error.message}`);
+            }
+        }
+        
+        // Funções de edição em massa
+        function openBulkEditModal() {
+            if (selectedCompanies.size === 0) {
+                alert('Nenhuma empresa selecionada');
+                return;
+            }
+            
+            // Atualizar contador e lista
+            document.getElementById('bulkEditCount').textContent = selectedCompanies.size;
+            
+            // Mostrar lista das empresas selecionadas
+            const selectedList = document.getElementById('selectedCompaniesList');
+            let listHtml = '';
+            
+            selectedCompanies.forEach(index => {
+                const company = companies[index];
+                if (company) {
+                    listHtml += `<div style="margin: 5px 0; padding: 5px; border-left: 3px solid #007bff;">
+                        <strong>${company.razao_social}</strong> - ${getStatusLabel(company.pipeline_status)}
+                    </div>`;
+                }
+            });
+            
+            selectedList.innerHTML = listHtml;
+            
+            // Limpar campos
+            document.getElementById('bulkNewStatus').value = '';
+            document.getElementById('bulkNotes').value = '';
+            
+            document.getElementById('bulkEditModal').style.display = 'block';
+        }
+        
+        function closeBulkEditModal() {
+            document.getElementById('bulkEditModal').style.display = 'none';
+        }
+        
+        async function saveBulkChanges(event) {
+            event.preventDefault();
+            
+            const newStatus = document.getElementById('bulkNewStatus').value;
+            const notes = document.getElementById('bulkNotes').value;
+            
+            if (!newStatus) {
+                alert('Selecione um status');
+                return;
+            }
+            
+            if (!confirm(`Alterar status de ${selectedCompanies.size} empresas para "${getStatusLabel(newStatus)}"?`)) {
+                return;
+            }
+            
+            try {
+                let successCount = 0;
+                let errorCount = 0;
+                
+                // Processar cada empresa selecionada
+                for (const companyIndex of selectedCompanies) {
+                    try {
+                        const response = await fetch(`/api/crm/company/${companyIndex}/status`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                status: newStatus,
+                                notes: notes
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            // Atualizar dados locais
+                            companies[companyIndex] = result.company;
+                            successCount++;
+                        } else {
+                            errorCount++;
+                        }
+                        
+                    } catch (error) {
+                        console.error(`Erro ao atualizar empresa ${companyIndex}:`, error);
+                        errorCount++;
+                    }
+                }
+                
+                // Mostrar resultado
+                if (successCount > 0) {
+                    alert(`${successCount} empresas atualizadas com sucesso!` + 
+                          (errorCount > 0 ? ` ${errorCount} falharam.` : ''));
+                    
+                    // Recarregar dados e limpar seleção
+                    await loadCrmData();
+                    clearSelection();
+                    closeBulkEditModal();
+                } else {
+                    alert('Nenhuma empresa foi atualizada. Verifique os erros.');
+                }
+                
+            } catch (error) {
+                console.error('Erro na edição em massa:', error);
+                alert('Erro ao processar edição em massa');
+            }
+        }
+        
+        // Event Listeners
+        document.getElementById('editForm').addEventListener('submit', saveCompanyChanges);
+        document.getElementById('bulkEditForm').addEventListener('submit', saveBulkChanges);
+        document.getElementById('emailCampaignForm').addEventListener('submit', sendEmailCampaign);
+        document.getElementById('smsCampaignForm').addEventListener('submit', sendSMSCampaign);
+        
+        // Fechar modal ao clicar fora
+        window.addEventListener('click', function(event) {
+            const editModal = document.getElementById('editModal');
+            const emailModal = document.getElementById('emailCampaignModal');
+            const smsModal = document.getElementById('smsCampaignModal');
+            const bulkModal = document.getElementById('bulkEditModal');
+            
+            if (event.target === editModal) {
+                closeModal();
+            }
+            if (event.target === emailModal) {
+                closeEmailCampaignModal();
+            }
+            if (event.target === smsModal) {
+                closeSMSCampaignModal();
+            }
+            if (event.target === bulkModal) {
+                closeBulkEditModal();
+            }
+        });
+        
+        // Função para upload de arquivo
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadFile(file);
+            }
+        }
+        
+        function uploadFile(file) {
+            // Validar arquivo
+            const validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+                               'application/vnd.ms-excel', 'text/csv'];
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls|csv)$/i)) {
+                showAlert('Tipo de arquivo não suportado. Use Excel (.xlsx, .xls) ou CSV.', 'error');
+                return;
+            }
+            
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('alerts').innerHTML = '';
+            
+            // Preparar FormData
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // Enviar arquivo
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.success) {
+                    showAlert(`Arquivo processado com sucesso! ${data.total_records} registros carregados no CRM.`);
+                    // Recarregar dados do CRM
+                    loadCrmData();
+                    // Notificar outras páginas sobre os novos dados
+                    notifyDataUpdate();
+                } else {
+                    showAlert(`Erro no processamento: ${data.error}`, 'error');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                showAlert(`Erro na comunicação: ${error.message}`, 'error');
+            });
+        }
+        
+        function loadSampleData() {
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('alerts').innerHTML = '';
+            
+            // Carregar dados de exemplo
+            fetch('/api/load-sample-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.success) {
+                    showAlert(`Dados de exemplo carregados! ${data.total_records} empresas disponíveis no CRM.`);
+                    // Recarregar dados do CRM
+                    loadCrmData();
+                    // Notificar outras páginas sobre os novos dados
+                    notifyDataUpdate();
+                } else {
+                    showAlert(`Erro: ${data.error}`, 'error');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                showAlert(`Erro na comunicação: ${error.message}`, 'error');
+            });
+        }
+        
+        function showAlert(message, type = 'success') {
+            const alerts = document.getElementById('alerts');
+            alerts.innerHTML = `
+                <div class="alert alert-${type}" style="margin: 15px 0; padding: 15px; border-radius: 5px; ${type === 'success' ? 'background: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'}">
+                    ${message}
+                </div>
+            `;
+        }
+        
+        // Upload handlers
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        
+        fileInput.addEventListener('change', handleFileSelect);
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', function(event) {
+            event.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('drop', function(event) {
+            event.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                uploadFile(files[0]);
+            }
+        });
+        uploadArea.addEventListener('dragleave', function(event) {
+            event.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+        
+        // Novas funções para os novos recursos
+        function openAddCompanyModal() {
+            document.getElementById('addCompanyModal').style.display = 'block';
+        }
+        
+        function closeAddCompanyModal() {
+            document.getElementById('addCompanyModal').style.display = 'none';
+            document.getElementById('addCompanyForm').reset();
+            
+            // Resetar estado de edição
+            currentEditingIndex = -1;
+            // Restaurar texto do modal para modo de adição
+            document.querySelector('#addCompanyModal .modal-title').textContent = 'Inserir Nova Empresa';
+            document.querySelector('#addCompanyModal button[type="submit"]').textContent = 'Adicionar Empresa';
+        }
+        
+        async function addNewCompany(event) {
+            event.preventDefault();
+            
+            const formData = {
+                cnpj: document.getElementById('newCnpj').value,
+                razao_social: document.getElementById('newRazaoSocial').value,
+                nome_fantasia: document.getElementById('newNomeFantasia').value,
+                situacao: document.getElementById('newSituacao').value,
+                cep: document.getElementById('newCep').value,
+                uf: document.getElementById('newUf').value,
+                endereco_completo: document.getElementById('newEnderecoCompleto').value,
+                municipio: document.getElementById('newMunicipio').value,
+                bairro: document.getElementById('newBairro').value,
+                telefone1: document.getElementById('newTelefone1').value,
+                telefone2: document.getElementById('newTelefone2').value,
+                email: document.getElementById('newEmail').value,
+                porte: document.getElementById('newPorte').value,
+                cnae: document.getElementById('newCnae').value,
+                ramo_atividade: document.getElementById('newRamoAtividade').value,
+                capital_social: document.getElementById('newCapitalSocial').value,
+                mei: document.getElementById('newMei').checked,
+                observacoes: document.getElementById('newObservacoes').value
+            };
+            
+            try {
+                // Verificar se estamos editando (currentEditingIndex >= 0) ou adicionando (currentEditingIndex == -1)
+                const isEditing = currentEditingIndex >= 0;
+                let response, result;
+                
+                if (isEditing) {
+                    // Editar empresa existente
+                    response = await fetch(`/api/crm/company/${currentEditingIndex}/update`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                } else {
+                    // Adicionar nova empresa
+                    response = await fetch('/api/crm/company/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                }
+                
+                result = await response.json();
+                
+                if (result.success) {
+                    if (isEditing) {
+                        showAlert(`Empresa "${formData.razao_social}" atualizada com sucesso!`);
+                        // Resetar estado de edição
+                        currentEditingIndex = -1;
+                        // Restaurar texto do modal
+                        document.querySelector('#addCompanyModal .modal-title').textContent = 'Inserir Nova Empresa';
+                        document.querySelector('#addCompanyModal button[type="submit"]').textContent = 'Adicionar Empresa';
+                    } else {
+                        showAlert(`Empresa "${formData.razao_social}" adicionada com sucesso!`);
+                    }
+                    closeAddCompanyModal();
+                    await loadCrmData();
+                } else {
+                    showAlert(`Erro: ${result.error}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao salvar empresa:', error);
+                showAlert(`Erro de comunicação: ${error.message}`, 'error');
+            }
+        }
+        
+        async function clearAllData() {
+            if (!confirm('Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita!')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/clear-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Todos os dados foram limpos com sucesso!');
+                    await loadCrmData();
+                } else {
+                    showAlert(`Erro: ${result.error}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao limpar dados:', error);
+                showAlert(`Erro na comunicação: ${error.message}`, 'error');
+            }
+        }
+        
+        async function undoLastAction() {
+            try {
+                const response = await fetch('/api/undo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(result.message);
+                    await loadCrmData();
+                } else {
+                    showAlert(`Erro: ${result.error}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao desfazer:', error);
+                showAlert(`Erro na comunicação: ${error.message}`, 'error');
+            }
+        }
+        
+        async function saveData() {
+            if (!companies || companies.length === 0) {
+                showAlert('Não há dados para salvar', 'error');
+                return;
+            }
+            
+            try {
+                // Salvar estado atual para permitir desfazer
+                savedState = JSON.parse(JSON.stringify(companies));
+                hasUnsavedChanges = false;
+                
+                showAlert('Alterações salvas com sucesso!', 'success');
+                
+                // Notificar outras páginas sobre a atualização
+                localStorage.setItem('dataUpdated', Date.now().toString());
+                
+            } catch (error) {
+                console.error('Erro ao salvar:', error);
+                showAlert(`Erro ao salvar dados: ${error.message}`, 'error');
+            }
+        }
+        
+        // Função para notificar outras páginas sobre atualizações de dados
+        function notifyDataUpdate() {
+            // Usar localStorage para comunicação entre abas
+            localStorage.setItem('dataUpdated', Date.now().toString());
+        }
+        
+        // Escutar mudanças de dados de outras abas
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'dataUpdated') {
+                // Recarregar dados quando houver atualização
+                loadCrmData();
+            }
+        });
+        
+        // Event listeners para os novos modais
+        document.getElementById('addCompanyForm').addEventListener('submit', addNewCompany);
+        
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCrmData();
+            setupFilters();
+        });
+    </script>
+</body>
+</html>
