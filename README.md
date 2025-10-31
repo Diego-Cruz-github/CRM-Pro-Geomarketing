@@ -24,7 +24,7 @@ A comprehensive customer relationship management system with advanced geolocatio
 ### Real-time Dashboard
 <img src="SS's/ccrmedashboard-_1_.gif" width="600" alt="Dashboard Demo">
 
-### Business Intelligence Export
+### Business Intelligence Export (Power BI, Tableau, Google Data Studio)
 <img src="SS's/cBiimplementação-_1_.gif" width="600" alt="BI Integration Demo">
 
 </div>
