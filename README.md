@@ -16,7 +16,7 @@ A comprehensive customer relationship management system with advanced geolocatio
 <div align="center">
 
 ### Geomarketing Intelligence
-<img src="SS's/cgif1-geomarketing.gif" width="600" alt="Geomarketing Demo">
+<img src="SS's/cgif1-geomarketing_2.gif" width="600" alt="Geomarketing Demo">
 
 ### CRM Pipeline Management  
 <img src="SS's/ccrm1-_1_.gif" width="600" alt="CRM Pipeline Demo">
