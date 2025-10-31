@@ -8,6 +8,20 @@ A comprehensive customer relationship management system with advanced geolocatio
 ![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-orange.svg)
 ![OpenPyXL](https://img.shields.io/badge/OpenPyXL-Excel%20Integration-red.svg)
 
+## Demo
+
+### Geomarketing Module
+![Geomarketing Demo](SS's/cgif1-geomarketing.gif)
+
+### CRM Pipeline Management
+![CRM Pipeline Demo](SS's/ccrm1%20(1).gif)
+
+### Dashboard Analytics
+![Dashboard Demo](SS's/ccrmedashboard%20(1).gif)
+
+### Business Intelligence Integration
+![BI Integration Demo](SS's/cBiimplementação%20(1).gif)
+
 ## Features
 
 ### Core CRM Functionality
