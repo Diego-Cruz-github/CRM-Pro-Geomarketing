@@ -7,6 +7,9 @@ A comprehensive customer relationship management system with advanced geolocatio
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)
 ![Pandas](https://img.shields.io/badge/Pandas-Data%20Processing-orange.svg)
 ![OpenPyXL](https://img.shields.io/badge/OpenPyXL-Excel%20Integration-red.svg)
+![Power BI](https://img.shields.io/badge/Power%20BI-Integration-yellow.svg)
+![Tableau](https://img.shields.io/badge/Tableau-Compatible-orange.svg)
+![Google Data Studio](https://img.shields.io/badge/Google%20Data%20Studio-Supported-blue.svg)
 
 ## Demo
 
