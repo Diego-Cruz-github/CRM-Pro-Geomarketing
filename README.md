@@ -11,19 +11,23 @@ A comprehensive customer relationship management system with advanced geolocatio
 ![Tableau](https://img.shields.io/badge/Tableau-Compatible-orange.svg)
 ![Google Data Studio](https://img.shields.io/badge/Google%20Data%20Studio-Supported-blue.svg)
 
-## Demo
+## System Overview
 
-### Geomarketing Module
-![Geomarketing Demo](SS's/cgif1-geomarketing.gif)
+<div align="center">
 
-### CRM Pipeline Management
-![CRM Pipeline Demo](SS's/ccrm1%20(1).gif)
+### Geomarketing Intelligence
+<img src="SS's/cgif1-geomarketing.gif" width="600" alt="Geomarketing Demo">
 
-### Dashboard Analytics
-![Dashboard Demo](SS's/ccrmedashboard%20(1).gif)
+### CRM Pipeline Management  
+<img src="SS's/ccrm1%20(1).gif" width="600" alt="CRM Pipeline Demo">
 
-### Business Intelligence Integration
-![BI Integration Demo](SS's/cBiimplementação%20(1).gif)
+### Real-time Dashboard
+<img src="SS's/ccrmedashboard%20(1).gif" width="600" alt="Dashboard Demo">
+
+### Business Intelligence Export
+<img src="SS's/cBiimplementação%20(1).gif" width="600" alt="BI Integration Demo">
+
+</div>
 
 ## Features
 
@@ -45,11 +49,12 @@ A comprehensive customer relationship management system with advanced geolocatio
 - **Google Data Studio**: Direct integration with cloud-based dashboards
 - **Multi-format Export**: Excel, CSV with encoding optimization for international use
 
-### Data Processing Architecture
-- **Multi-source Import**: Excel (.xlsx, .xls) and CSV file processing
-- **Intelligent Column Mapping**: Automatic field detection and standardization
-- **Batch Processing**: Efficient handling of large datasets with progress tracking
-- **Data Integrity**: Built-in validation and error recovery mechanisms
+### Advanced Data Processing
+- **Smart Column Detection**: Automatic mapping of 40+ business field types
+- **Multi-format Support**: Excel (.xlsx, .xls) and CSV with encoding detection
+- **Data Standardization**: CNPJ, phone, email cleaning and validation pipeline
+- **Professional Templates**: HTML email and SMS templates with dynamic substitution
+- **Kanban Pipeline**: Drag-and-drop interface with 7-stage lead management
 
 ## Technical Stack
 
@@ -86,11 +91,18 @@ src/
 └── static/            # Assets and styling
 ```
 
-### Performance Optimizations
-- **Lazy Loading**: Progressive data loading for large datasets
-- **Caching Strategy**: Intelligent geocoding cache with 15-minute TTL
-- **Background Processing**: Non-blocking operations for file uploads
-- **Memory Management**: Efficient data structures for real-time operations
+### Enterprise Architecture
+- **Service Layer Pattern**: Modular design with dedicated services for email, SMS, and geocoding
+- **Multi-API Fallback**: Intelligent geocoding with ViaCEP, Nominatim, and regional fallbacks
+- **Real-time Synchronization**: Cross-tab communication using localStorage API
+- **Batch Processing**: Optimized for datasets of 10,000+ records with progress tracking
+- **Undo/Redo System**: Operation history with 10-level rollback capability
+
+### Performance & Scalability
+- **Memory Optimization**: Efficient buffer handling for 100MB+ file processing
+- **Geocoding Cache**: 15-minute TTL with 90%+ success rate
+- **Dashboard Updates**: Sub-100ms real-time synchronization
+- **Export Performance**: Latin-1 encoding optimization for Brazilian Excel compatibility
 
 ### Security Features
 - **Input Sanitization**: Comprehensive data validation
@@ -116,28 +128,19 @@ src/
 - `POST /api/email/campaign` - Bulk email campaigns
 - `POST /api/sms/send` - SMS communication
 
-## Installation
+## Requirements
 
-```bash
-# Clone repository
-git clone <repository-url>
-cd crm-pro-geomarketing
+- Python 3.8+
+- Flask 2.0+
+- Modern browser with JavaScript ES6+ support
 
-# Install dependencies
-pip install -r requirements.txt
+## System Capabilities
 
-# Run application
-python src/app.py
-```
-
-Access the application at `http://localhost:5000`
-
-## Performance Metrics
-
-- **File Processing**: Handles 10,000+ records with 2-second processing time
-- **Geocoding**: 90%+ success rate with multi-provider fallback
-- **Real-time Sync**: Sub-100ms dashboard updates across multiple tabs
-- **Export Speed**: Excel generation optimized for enterprise datasets
+- **Data Processing**: Handles 10,000+ records with intelligent validation
+- **Geocoding Accuracy**: 90%+ success rate with 77 regional mappings
+- **Real-time Performance**: Sub-100ms dashboard synchronization
+- **Memory Efficiency**: 100MB+ file processing with optimized buffers
+- **Multi-provider APIs**: SparkPost, Twilio, ViaCEP, Nominatim integration
 
 ---
 
