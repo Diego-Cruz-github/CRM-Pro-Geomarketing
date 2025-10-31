@@ -5,258 +5,201 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - CRM Pro Geomarketing</title>
     
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
+    <!-- Corporate Design System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/corporate-design.css') }}">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-        }
-        
-        .navbar {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 0;
-        }
-        
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-        }
-        
-        .nav-brand {
-            padding: 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .nav-links {
-            display: flex;
-            margin-left: auto;
-        }
-        
-        .nav-link {
-            padding: 20px 25px;
-            text-decoration: none;
-            color: #666;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
-        }
-        
-        .nav-link:hover {
-            background: #f8f9fa;
-            color: #007bff;
-        }
-        
-        .nav-link.active {
-            color: #007bff;
-            border-bottom-color: #007bff;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px 20px;
-        }
-        
-        .page-header {
-            margin-bottom: 30px;
-        }
-        
-        .page-title {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .page-subtitle {
-            color: #666;
-            font-size: 16px;
-        }
-        
+        /* Dashboard-specific styles */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
         }
         
         .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--neutral-0);
+            padding: var(--space-6);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
             text-align: center;
+            border: 1px solid var(--neutral-200);
+            transition: all var(--transition-normal);
+        }
+        
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--neutral-300);
         }
         
         .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #007bff;
-            margin-bottom: 10px;
+            font-size: var(--text-4xl);
+            font-weight: var(--font-bold);
+            color: var(--primary-600);
+            margin-bottom: var(--space-2);
         }
         
         .stat-label {
-            color: #666;
-            font-size: 14px;
+            color: var(--neutral-600);
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.05em;
         }
+        
+        .crm-card .stat-number { color: var(--success-600); }
         
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
+            gap: var(--space-6);
         }
         
         .chart-card {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--neutral-0);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 1px solid var(--neutral-200);
         }
         
         .chart-title {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 18px;
+            padding: var(--space-4) var(--space-6);
+            font-size: var(--text-lg);
+            font-weight: var(--font-semibold);
+            color: var(--neutral-800);
+            border-bottom: 1px solid var(--neutral-200);
+            background: var(--neutral-50);
         }
         
         .chart-container {
-            position: relative;
+            padding: var(--space-6);
             height: 300px;
         }
         
-        .section {
-            margin-bottom: 40px;
-        }
-        
-        .section-title {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-        }
-        
-        .crm-card {
-            border-left: 4px solid #28a745;
-        }
-        
-        .crm-card .stat-number {
-            color: #28a745;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #666;
-        }
-        
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        
-        .no-data {
-            text-align: center;
-            padding: 50px;
-            color: #666;
-        }
-        
-        .no-data h3 {
-            margin-bottom: 15px;
-        }
-        
-        .btn {
-            background: #007bff;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
+        /* Fix for BI buttons hover - override outline style */
+        .bi-export-btn {
+            background-color: var(--neutral-0);
+            color: var(--primary-600);
+            border: 1px solid var(--primary-300);
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
             text-decoration: none;
-            display: inline-block;
-            transition: background 0.3s;
+            font-weight: var(--font-medium);
         }
         
-        .btn:hover {
-            background: #0056b3;
+        .bi-export-btn:hover {
+            background-color: var(--primary-600);
+            color: var(--neutral-0);
+            border-color: var(--primary-600);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">CRM Pro</div>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Geomarketing</a>
-                <a href="/crm" class="nav-link">CRM Pipeline</a>
-                <a href="/dashboard" class="nav-link active">Dashboard</a>
+        <div class="container">
+            <div class="nav-container">
+                <a href="/" class="nav-brand">CRM Pro Geomarketing</a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Geomarketing</a>
+                    <a href="/crm" class="nav-link">CRM Pipeline</a>
+                    <a href="/dashboard" class="nav-link active">Dashboard</a>
+                </div>
             </div>
         </div>
     </nav>
     
+    <!-- Main Content -->
     <div class="container">
-        <div class="page-header">
-            <h1 class="page-title">Dashboard Analítico</h1>
-            <p class="page-subtitle">Os dados e estatísticas aparecerão aqui após fazer upload do arquivo na página Geomarketing ou CRM Pipeline</p>
+        <!-- Page Header -->
+        <div class="card mb-6">
+            <div class="card-header text-center">
+                <h1 class="card-title text-2xl">Dashboard Analítico</h1>
+                <p class="card-subtitle">Análises em tempo real e métricas de performance do seu pipeline de leads</p>
+            </div>
         </div>
         
-        <div id="loadingSection" class="loading">
-            <h3>Carregando estatísticas...</h3>
+        <!-- Loading State -->
+        <div id="loadingSection" class="text-center" style="padding: var(--space-20);">
+            <div class="mb-6">
+                <svg class="animate-spin h-8 w-8 mx-auto text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+            <h3 style="font-size: var(--text-xl); font-weight: var(--font-semibold); color: var(--neutral-800);">Carregando Análises...</h3>
+            <p class="text-neutral-600 mt-2">Os dados aparecerão após carregar arquivos no Geomarketing ou Pipeline CRM</p>
         </div>
         
-        
+        <!-- Dashboard Content -->
         <div id="dashboardContent" style="display: none;">
-            <!-- CRM Overview Section -->
-            <div class="section">
-                <h2 class="section-title">Performance de Vendas</h2>
-                <div class="stats-grid">
-                    <div class="stat-card crm-card">
-                        <div class="stat-number" id="totalLeads">0</div>
-                        <div class="stat-label">Total de Leads</div>
-                    </div>
-                    <div class="stat-card crm-card">
-                        <div class="stat-number" id="conversionRate">0%</div>
-                        <div class="stat-label">Taxa de Conversão</div>
-                    </div>
-                    <div class="stat-card crm-card">
-                        <div class="stat-number" id="leadsInProgress">0</div>
-                        <div class="stat-label">Em Andamento</div>
-                    </div>
-                    <div class="stat-card crm-card">
-                        <div class="stat-number" id="contactRate">0%</div>
-                        <div class="stat-label">Com Dados de Contato</div>
+            <!-- Sales Performance Section -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h2 class="card-title">Performance de Vendas</h2>
+                    <p class="card-subtitle">Métricas principais do seu pipeline de leads</p>
+                </div>
+                <div class="card-body">
+                    <div class="stats-grid">
+                        <div class="stat-card crm-card">
+                            <div class="stat-number" id="totalLeads">0</div>
+                            <div class="stat-label">Total de Leads</div>
+                        </div>
+                        <div class="stat-card crm-card">
+                            <div class="stat-number" id="conversionRate">0%</div>
+                            <div class="stat-label">Taxa de Conversão</div>
+                        </div>
+                        <div class="stat-card crm-card">
+                            <div class="stat-number" id="leadsInProgress">0</div>
+                            <div class="stat-label">Em Andamento</div>
+                        </div>
+                        <div class="stat-card crm-card">
+                            <div class="stat-number" id="contactRate">0%</div>
+                            <div class="stat-label">Taxa de Contato</div>
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Data Quality Section -->
-            <div class="section">
-                <h2 class="section-title">Qualidade dos Dados</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalRecords">0</div>
-                        <div class="stat-label">Total de Empresas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="geocodedRecords">0</div>
-                        <div class="stat-label">Geocodificadas</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="geocodingRate">0%</div>
-                        <div class="stat-label">Taxa de Geocoding</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="uniqueStates">0</div>
-                        <div class="stat-label">Estados Diferentes</div>
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h2 class="card-title">Métricas de Qualidade dos Dados</h2>
+                    <p class="card-subtitle">Processamento geográfico e completude dos dados</p>
+                </div>
+                <div class="card-body">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalRecords">0</div>
+                            <div class="stat-label">Total de Empresas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="geocodedRecords">0</div>
+                            <div class="stat-label">Geocoded</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="geocodingRate">0%</div>
+                            <div class="stat-label">Taxa de Geocodificação</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="uniqueStates">0</div>
+                            <div class="stat-label">Estados Únicos</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -271,7 +214,7 @@
                 </div>
                 
                 <div class="chart-card">
-                    <h3 class="chart-title">Status dos Leads</h3>
+                    <h3 class="chart-title">Distribuição por Status dos Leads</h3>
                     <div class="chart-container">
                         <canvas id="leadsStatusChart"></canvas>
                     </div>
@@ -279,16 +222,74 @@
                 
                 <!-- Geographic Charts -->
                 <div class="chart-card">
-                    <h3 class="chart-title">Distribuição por Estado</h3>
+                    <h3 class="chart-title">Distribuição Geográfica</h3>
                     <div class="chart-container">
                         <canvas id="statesChart"></canvas>
                     </div>
                 </div>
                 
                 <div class="chart-card">
-                    <h3 class="chart-title">Distribuição por Porte</h3>
+                    <h3 class="chart-title">Distribuição por Porte da Empresa</h3>
                     <div class="chart-container">
                         <canvas id="sizesChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <h3 class="chart-title">Company Status Overview</h3>
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- BI Integration Section -->
+            <div class="card mb-6">
+                <div class="card-header">
+                    <h2 class="card-title">Integração com Ferramentas de BI</h2>
+                    <p class="card-subtitle">Exporte seus dados para plataformas de Business Intelligence</p>
+                </div>
+                
+                <!-- Explanation Section -->
+                <div class="card-body" style="border-bottom: 1px solid var(--neutral-200); background-color: var(--neutral-50);">
+                    <div style="padding: var(--space-3);">
+                        <p style="color: var(--neutral-700); font-size: var(--text-sm); margin-bottom: var(--space-2);">
+                            <strong>Como usar:</strong> Clique no botão → Baixa arquivo → Importe na ferramenta de BI → Crie dashboards profissionais
+                        </p>
+                        <p style="color: var(--neutral-600); font-size: var(--text-xs);">
+                            Transforma dados do CRM em relatórios executivos com gráficos interativos, mapas e análises avançadas.
+                        </p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+                        <button class="bi-export-btn" onclick="exportToPowerBI()">
+                            <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M2 2v20h20V2H2zm6 18H4V8h4v12zm6 0h-4V4h4v16zm6 0h-4V6h4v14z"/>
+                            </svg>
+                            Exportar para Power BI
+                        </button>
+                        <button class="bi-export-btn" onclick="exportToTableau()">
+                            <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                            </svg>
+                            Exportar para Tableau
+                        </button>
+                        <button class="bi-export-btn" onclick="exportToGoogleDataStudio()">
+                            <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zm-8-2h6v-2h-6v2zm0-4h6V9h-6v4zM7 7h4v10H7V7z"/>
+                            </svg>
+                            Google Data Studio
+                        </button>
+                    </div>
+                    <div style="margin-top: var(--space-6); padding: var(--space-4); background-color: var(--primary-50); border-radius: var(--radius-lg); border: 1px solid var(--primary-200);">
+                        <h4 style="font-weight: var(--font-semibold); color: var(--primary-800); margin-bottom: var(--space-2);">Conectores Avançados</h4>
+                        <p style="font-size: var(--text-sm); color: var(--primary-700);">
+                            • <strong>Power BI:</strong> Arquivo JSON estruturado para importação<br>
+                            • <strong>Tableau:</strong> Arquivo CSV<br>
+                            • <strong>Google Data Studio:</strong> Conector direto via Google Sheets API<br>
+                            • <strong>Excel:</strong> Tabelas dinâmicas pré-configuradas
+                        </p>
                     </div>
                 </div>
             </div>
@@ -299,16 +300,95 @@
     <script>
         let statesChart, sizesChart, pipelineChart, leadsStatusChart;
         
+        // Calcular estatísticas do dashboard a partir dos dados do CRM
+        function calculateDashboardStats(companies) {
+            const total = companies.length;
+            
+            // Por UF
+            const ufs = {};
+            const portes = {};
+            const situacoes = {};
+            let geocoded = 0;
+            
+            // Dados do CRM
+            const pipeline_stats = {};
+            let companies_with_contact = 0;
+            
+            companies.forEach(item => {
+                // Contar por UF
+                const uf = item.uf || 'N/A';
+                ufs[uf] = (ufs[uf] || 0) + 1;
+                
+                // Contar por porte
+                const porte = item.porte || 'N/A';
+                portes[porte] = (portes[porte] || 0) + 1;
+                
+                // Contar por situação
+                const situacao = item.situacao || 'N/A';
+                situacoes[situacao] = (situacoes[situacao] || 0) + 1;
+                
+                // Contar geocodificados
+                if (item.latitude && item.longitude) {
+                    geocoded++;
+                }
+                
+                // Status do pipeline
+                const status = item.pipeline_status || 'nao_contactado';
+                pipeline_stats[status] = (pipeline_stats[status] || 0) + 1;
+                
+                // Empresas com dados de contato
+                if (item.email || item.telefone1) {
+                    companies_with_contact++;
+                }
+            });
+            
+            // Calcular taxa de conversão
+            const total_leads = Object.values(pipeline_stats).reduce((a, b) => a + b, 0);
+            const conversion_rate = total_leads > 0 ? 
+                Math.round((pipeline_stats.fechado || 0) / total_leads * 100 * 10) / 10 : 0;
+            
+            // Ordenar UFs por quantidade
+            const sorted_ufs = Object.entries(ufs)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 10)
+                .reduce((obj, [key, val]) => {
+                    obj[key] = val;
+                    return obj;
+                }, {});
+            
+            return {
+                total_records: total,
+                geocoded_records: geocoded,
+                geocoding_rate: total > 0 ? Math.round(geocoded / total * 100 * 10) / 10 : 0,
+                by_uf: sorted_ufs,
+                by_porte: portes,
+                by_situacao: situacoes,
+                pipeline_stats: pipeline_stats,
+                conversion_rate: conversion_rate,
+                companies_with_contact: companies_with_contact,
+                contact_rate: total > 0 ? Math.round(companies_with_contact / total * 100 * 10) / 10 : 0,
+                leads_in_progress: (pipeline_stats.negociacao || 0) + 
+                                 (pipeline_stats.email_enviado || 0) + 
+                                 (pipeline_stats.sms_enviado || 0) + 
+                                 (pipeline_stats.email_sms_enviados || 0)
+            };
+        }
+        
         // Carregar dados do dashboard
         async function loadDashboard() {
             try {
-                const response = await fetch('/api/dashboard/stats');
-                const data = await response.json();
+                // Usar mesma API do CRM para garantir sincronização
+                const response = await fetch('/api/crm/companies');
+                const result = await response.json();
                 
-                if (data.error) {
+                if (result.error) {
                     showNoData();
                     return;
                 }
+                
+                // Calcular estatísticas a partir dos dados do CRM
+                const companies = result.companies || [];
+                const data = calculateDashboardStats(companies);
                 
                 hideLoading();
                 populateStats(data);
@@ -552,10 +632,215 @@
         // Escutar mudanças de dados de outras abas
         window.addEventListener('storage', function(e) {
             if (e.key === 'dataUpdated') {
+                console.log('Detectada atualização de dados do CRM, recarregando dashboard...');
                 // Recarregar dashboard quando houver atualização
-                loadDashboard();
+                setTimeout(() => {
+                    loadDashboard();
+                }, 100);
             }
         });
+        
+        // Também escutar eventos customizados
+        window.addEventListener('crmDataUpdated', function(e) {
+            console.log('Evento customizado detectado, atualizando dashboard...', e.detail);
+            setTimeout(() => {
+                loadDashboard();
+            }, 100);
+        });
+        
+        // Função para forçar atualização (para teste)
+        function forceRefresh() {
+            console.log('Forçando atualização do dashboard...');
+            loadDashboard();
+        }
+        
+        // Atualizar automaticamente a cada 5 segundos (para garantir)
+        setInterval(() => {
+            loadDashboard();
+        }, 5000);
+        
+        // BI Export Functions
+        async function exportToPowerBI() {
+            try {
+                const response = await fetch('/api/crm/companies');
+                const result = await response.json();
+                
+                if (result.error) {
+                    alert('Nenhum dado para exportar');
+                    return;
+                }
+                
+                const companies = result.companies || [];
+                const data = calculateDashboardStats(companies);
+                
+                // Create Power BI compatible JSON format
+                const powerBIData = {
+                    metadata: {
+                        exportDate: new Date().toISOString(),
+                        platform: "CRM Pro Geomarketing",
+                        recordCount: data.total_records
+                    },
+                    leads: await getDetailedLeadsData(),
+                    summary: {
+                        totalLeads: data.total_records,
+                        conversionRate: data.conversion_rate,
+                        contactRate: data.contact_rate,
+                        geocodingRate: data.geocoding_rate
+                    },
+                    pipeline: data.pipeline_stats,
+                    geographic: data.by_uf,
+                    companySize: data.by_porte
+                };
+                
+                downloadJSONFile(powerBIData, 'crm_dados_powerbi.json');
+                alert('Dados exportados para Power BI!\n\nUse o Power BI Desktop para importar o arquivo JSON e criar dashboards avançados.');
+                
+            } catch (error) {
+                alert('Erro ao exportar para Power BI: ' + error.message);
+            }
+        }
+        
+        async function exportToTableau() {
+            try {
+                const response = await fetch('/api/crm/companies');
+                const data = await response.json();
+                
+                if (data.error || !data.companies.length) {
+                    alert('Nenhum dado para exportar');
+                    return;
+                }
+                
+                // Create Tableau-compatible CSV with all fields
+                const tableauHeaders = [
+                    'ID', 'Razao_Social', 'Nome_Fantasia', 'CNPJ', 'Email', 'Telefone1', 'Telefone2',
+                    'Endereco', 'CEP', 'Municipio', 'UF', 'Bairro', 'Latitude', 'Longitude',
+                    'Porte', 'CNAE', 'Ramo_Atividade', 'Capital_Social', 'Pipeline_Status',
+                    'Data_Upload', 'Data_Ultima_Interacao', 'Observacoes'
+                ];
+                
+                const csvRows = [tableauHeaders.join(',')];
+                
+                data.companies.forEach((company, index) => {
+                    const row = [
+                        index + 1,
+                        `"${(company.razao_social || '').replace(/"/g, '""')}"`,
+                        `"${(company.nome_fantasia || '').replace(/"/g, '""')}"`,
+                        `"${company.cnpj || ''}"`,
+                        `"${company.email || ''}"`,
+                        `"${company.telefone1 || ''}"`,
+                        `"${company.telefone2 || ''}"`,
+                        `"${(company.endereco_completo || '').replace(/"/g, '""')}"`,
+                        `"${company.cep || ''}"`,
+                        `"${company.municipio || ''}"`,
+                        `"${company.uf || ''}"`,
+                        `"${company.bairro || ''}"`,
+                        company.latitude || 0,
+                        company.longitude || 0,
+                        `"${company.porte || ''}"`,
+                        `"${company.cnae || ''}"`,
+                        `"${(company.ramo_atividade || '').replace(/"/g, '""')}"`,
+                        company.capital_social || 0,
+                        `"${company.pipeline_status || 'nao_contactado'}"`,
+                        `"${company.data_upload || ''}"`,
+                        `"${company.data_ultima_interacao || ''}"`,
+                        `"${(company.observacoes || '').replace(/"/g, '""')}"`
+                    ];
+                    csvRows.push(row.join(','));
+                });
+                
+                const csvContent = csvRows.join('\n');
+                downloadFile(csvContent, 'crm_dados_tableau.csv', 'text/csv');
+                alert('Dados exportados para Tableau!\n\nImporte o arquivo CSV no Tableau Desktop e conecte para criar visualizações avançadas.');
+                
+            } catch (error) {
+                alert('Erro ao exportar para Tableau: ' + error.message);
+            }
+        }
+        
+        async function exportToGoogleDataStudio() {
+            try {
+                const response = await fetch('/api/crm/companies');
+                const result = await response.json();
+                
+                if (result.error) {
+                    alert('Nenhum dado para exportar');
+                    return;
+                }
+                
+                const companies = result.companies || [];
+                const data = calculateDashboardStats(companies);
+                
+                // Create Google Sheets compatible format
+                const googleSheetsData = {
+                    sheets: {
+                        "Summary": {
+                            headers: ["Métrica", "Valor", "Tipo"],
+                            data: [
+                                ["Total de Leads", data.total_records, "Quantidade"],
+                                ["Taxa de Conversão", data.conversion_rate + "%", "Percentual"],
+                                ["Taxa de Contato", data.contact_rate + "%", "Percentual"],
+                                ["Taxa de Geocodificação", data.geocoding_rate + "%", "Percentual"],
+                                ["Leads em Andamento", data.leads_in_progress, "Quantidade"],
+                                ["Estados Únicos", Object.keys(data.by_uf).length, "Quantidade"]
+                            ]
+                        },
+                        "Pipeline": {
+                            headers: ["Status", "Quantidade", "Percentual"],
+                            data: Object.entries(data.pipeline_stats || {}).map(([status, count]) => [
+                                status, count, Math.round((count / data.total_records) * 100) + "%"
+                            ])
+                        },
+                        "Geografia": {
+                            headers: ["Estado", "Empresas", "Percentual"],
+                            data: Object.entries(data.by_uf || {}).map(([uf, count]) => [
+                                uf, count, Math.round((count / data.total_records) * 100) + "%"
+                            ])
+                        }
+                    }
+                };
+                
+                downloadJSONFile(googleSheetsData, 'crm_dados_google_data_studio.json');
+                alert('Dados exportados para Google Data Studio!\n\nUse o Google Sheets para importar os dados e conecte ao Data Studio para dashboards em tempo real.');
+                
+            } catch (error) {
+                alert('Erro ao exportar para Google Data Studio: ' + error.message);
+            }
+        }
+        
+        async function getDetailedLeadsData() {
+            try {
+                const response = await fetch('/api/crm/companies');
+                const data = await response.json();
+                return data.companies || [];
+            } catch (error) {
+                return [];
+            }
+        }
+        
+        function downloadJSONFile(data, filename) {
+            const jsonContent = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }
+        
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }
         
         // Carregar dashboard ao inicializar
         document.addEventListener('DOMContentLoaded', loadDashboard);

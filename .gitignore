@@ -6,6 +6,8 @@ LANDING-*/
 *ESTRATEGIA*
 *SETUP*
 *INTEGRATIONS*
+*TESTE*
+*situacao-atual*
 Estrategia-GitHub-Profissional.md
 
 # Python
@@ -30,40 +32,46 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual Environment
-venv/
-env/
-ENV/
+# Flask
+instance/
+.webassets-cache
 
-# Environment Variables
+# Environment variables
 .env
-.env.local
-.env.production
-
-# Database
-*.db
-*.sqlite3
-
-# Uploads
-uploads/
-temp/
-cache/
-
-# Logs
-*.log
-logs/
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Backup files
-backups/
-*.bak
-*.backup
+# Uploads and temp files
+uploads/
+*.tmp
+*.log
+
+# Excel test files
+teste_pequeno.xlsx
+leads.csv
+*.xlsx
+*.csv
+
+# Temporary analysis files
+analisar_teste.py
+verificar_dados.py
+
+# Project-specific exclusions
+Nova pasta/
+conversaminhahugo.txt
+lista15102025082509.xlsx

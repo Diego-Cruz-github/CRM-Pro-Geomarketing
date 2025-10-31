@@ -1,5 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from utils.data_processor import DataProcessor
 from utils.geocoding import GeocodingService
@@ -21,18 +24,29 @@ sms_sender = TwilioSMSSender()
 # In-memory data storage (production would use PostgreSQL/Redis)
 uploaded_data = []
 
+# Email configuration storage
+email_config = {
+    'smtp_server': '',
+    'smtp_port': 587,
+    'email': '',
+    'password': '',
+    'sender_name': '',
+    'configured': False
+}
+
 def reset_all_data():
-    """Reset all application data completely"
+    """Reset all application data completely"""
     global uploaded_data, undo_stack
     uploaded_data = []
     undo_stack = []
 
-# Sample data for demonstration
+# Sample data for multi-industry demonstration
 sample_data = [
+    # B2B Lead Management
     {
         'cnpj': '12.345.678/0001-90',
-        'razao_social': 'Empresa Demo SP',
-        'nome_fantasia': 'Demo SP',
+        'razao_social': 'TechSolutions Enterprise Ltda',
+        'nome_fantasia': 'TechSolutions',
         'situacao': 'ATIVA',
         'cep': '01310-100',
         'endereco_completo': 'Av. Paulista, 1000, São Paulo, SP',
@@ -43,11 +57,11 @@ sample_data = [
         'bairro': 'Bela Vista',
         'telefone1': '(11) 99999-1001',
         'telefone2': '(11) 3333-1001',
-        'email': 'contato@demosp.com.br',
-        'porte': 'MEDIO',
+        'email': 'contato@techsolutions.com.br',
+        'porte': 'GRANDE',
         'cnae': '6201-5',
         'ramo_atividade': 'Desenvolvimento de software',
-        'capital_social': 500000.00,
+        'capital_social': 2500000.00,
         'mei': False,
         'pipeline_status': 'nao_contactado',
         'data_upload': '2025-01-01T10:00:00',
@@ -187,7 +201,7 @@ def health_check():
     return jsonify({
         'status': 'ok',
         'timestamp': datetime.now().isoformat(),
-        'message': 'Hugo Cabeção funcionando'
+        'message': 'CRM Pro Geomarketing API running'
     })
 
 @app.route('/api/load-sample-data', methods=['POST'])
@@ -196,11 +210,14 @@ def load_sample_data():
     global uploaded_data
     uploaded_data = sample_data.copy()
     
+    # Filtrar apenas dados com coordenadas válidas para o mapa
+    geocoded_for_map = [item for item in uploaded_data if item.get('latitude') and item.get('longitude')]
+    
     return jsonify({
         'success': True,
         'message': 'Dados de exemplo carregados',
         'total_records': len(uploaded_data),
-        'sample_data': uploaded_data[:3]  # Primeiros 3 para demonstração
+        'sample_data': geocoded_for_map  # Apenas registros com coordenadas válidas
     })
 
 @app.route('/api/upload', methods=['POST'])
@@ -229,13 +246,16 @@ def upload_file():
         all_geocoded = geocoding_service.geocode_batch(result['data'][:100], delay=0.1)  # Processar 100 para demo
         uploaded_data = all_geocoded
         
+        # Filtrar apenas dados com coordenadas válidas para o mapa
+        geocoded_for_map = [item for item in geocoded_sample if item.get('latitude') and item.get('longitude')]
+        
         return jsonify({
             'success': True,
             'message': 'Arquivo processado com sucesso',
             'total_records': result['total_records'],
             'columns_found': result['columns_found'],
             'original_columns': result['original_columns'],
-            'sample_data': geocoded_sample[:3],  # Primeiros 3 registros com coordenadas
+            'sample_data': geocoded_for_map,  # Apenas registros com coordenadas válidas
             'geocoded_sample_count': len(geocoded_sample)
         })
         
@@ -471,7 +491,7 @@ def send_email_campaign():
                         # Adicionar observação sobre o envio
                         current_obs = company.get('observacoes', '')
                         template_name = data.get('template_type', 'desconhecido')
-                        new_obs = f"📧 Email enviado ({template_name}) - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+                        new_obs = f"Email enviado ({template_name}) - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
                         
                         if current_obs:
                             company['observacoes'] = f"{current_obs}\n{new_obs}"
@@ -503,6 +523,143 @@ def validate_email_config():
         return jsonify(result)
     else:
         return jsonify(result), 400
+
+@app.route('/api/email/config', methods=['POST'])
+def configure_email():
+    """Configura SMTP para envio de emails"""
+    try:
+        data = request.get_json()
+        
+        # Validar dados obrigatórios
+        required_fields = ['smtp_server', 'smtp_port', 'email', 'password', 'sender_name']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({'error': f'Campo obrigatório: {field}'}), 400
+        
+        # Testar configuração SMTP
+        try:
+            server = smtplib.SMTP(data['smtp_server'], int(data['smtp_port']))
+            server.starttls()
+            server.login(data['email'], data['password'])
+            server.quit()
+        except Exception as e:
+            return jsonify({'error': f'Erro na configuração SMTP: {str(e)}'}), 400
+        
+        # Salvar configuração
+        global email_config
+        email_config.update({
+            'smtp_server': data['smtp_server'],
+            'smtp_port': int(data['smtp_port']),
+            'email': data['email'],
+            'password': data['password'],
+            'sender_name': data['sender_name'],
+            'configured': True
+        })
+        
+        return jsonify({
+            'success': True,
+            'message': 'Configuração de email salva com sucesso!'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
+
+@app.route('/api/email/config', methods=['GET'])
+def get_email_config():
+    """Retorna configuração atual de email (sem senha)"""
+    return jsonify({
+        'smtp_server': email_config.get('smtp_server', ''),
+        'smtp_port': email_config.get('smtp_port', 587),
+        'email': email_config.get('email', ''),
+        'sender_name': email_config.get('sender_name', ''),
+        'configured': email_config.get('configured', False)
+    })
+
+@app.route('/api/email/send-real', methods=['POST'])
+def send_real_email():
+    """Envia email real via SMTP configurado"""
+    try:
+        if not email_config.get('configured'):
+            return jsonify({'error': 'Email não configurado. Configure primeiro nas configurações.'}), 400
+            
+        data = request.get_json()
+        
+        # Validar dados
+        if not data.get('company_ids') or not isinstance(data['company_ids'], list):
+            return jsonify({'error': 'Lista de empresas obrigatória'}), 400
+        
+        if not data.get('subject') or not data.get('message'):
+            return jsonify({'error': 'Assunto e mensagem são obrigatórios'}), 400
+        
+        # Preparar lista de destinatários
+        recipients = []
+        for company_id in data['company_ids']:
+            if company_id < len(uploaded_data):
+                company = uploaded_data[company_id]
+                if company.get('email'):
+                    recipients.append({
+                        'email': company['email'],
+                        'company_name': company.get('razao_social', 'Empresa'),
+                        'company_id': company_id
+                    })
+        
+        if not recipients:
+            return jsonify({'error': 'Nenhuma empresa selecionada possui email'}), 400
+        
+        # Enviar emails
+        sent_count = 0
+        failed_count = 0
+        
+        for recipient in recipients:
+            try:
+                # Personalizar mensagem
+                personalized_message = data['message'].replace('{empresa}', recipient['company_name'])
+                
+                # Criar email
+                msg = MIMEMultipart()
+                msg['From'] = f"{email_config['sender_name']} <{email_config['email']}>"
+                msg['To'] = recipient['email']
+                msg['Subject'] = data['subject']
+                
+                # Corpo do email
+                body = personalized_message
+                msg.attach(MIMEText(body, 'plain', 'utf-8'))
+                
+                # Enviar
+                server = smtplib.SMTP(email_config['smtp_server'], email_config['smtp_port'])
+                server.starttls()
+                server.login(email_config['email'], email_config['password'])
+                text = msg.as_string()
+                server.sendmail(email_config['email'], recipient['email'], text)
+                server.quit()
+                
+                # Atualizar status da empresa
+                company = uploaded_data[recipient['company_id']]
+                company['pipeline_status'] = 'email_enviado'
+                company['data_ultima_interacao'] = datetime.now().isoformat()
+                
+                current_obs = company.get('observacoes', '')
+                new_obs = f"Email enviado - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+                if current_obs:
+                    company['observacoes'] = f"{current_obs}\n{new_obs}"
+                else:
+                    company['observacoes'] = new_obs
+                
+                sent_count += 1
+                
+            except Exception as e:
+                failed_count += 1
+                print(f"Erro ao enviar email para {recipient['email']}: {str(e)}")
+        
+        return jsonify({
+            'success': True,
+            'sent_count': sent_count,
+            'failed_count': failed_count,
+            'message': f'{sent_count} emails enviados com sucesso!'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Erro interno: {str(e)}'}), 500
 
 @app.route('/api/sms/send', methods=['POST'])
 def send_sms():
@@ -598,7 +755,7 @@ def send_sms_campaign():
                         # Adicionar observação sobre o envio
                         current_obs = company.get('observacoes', '')
                         template_name = data.get('template_type', 'desconhecido')
-                        new_obs = f"📱 SMS enviado ({template_name}) - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+                        new_obs = f"SMS enviado ({template_name}) - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
                         
                         if current_obs:
                             company['observacoes'] = f"{current_obs}\n{new_obs}"
@@ -636,6 +793,148 @@ def get_sms_balance():
         return jsonify(result)
     else:
         return jsonify(result), 400
+
+@app.route('/api/export/excel', methods=['GET'])
+def export_excel():
+    """Exporta dados para Excel usando pandas"""
+    try:
+        import pandas as pd
+        from flask import send_file
+        import io
+        
+        if not uploaded_data:
+            return jsonify({'error': 'Nenhum dado para exportar'}), 400
+        
+        # Criar DataFrame com estrutura idêntica ao arquivo original
+        df_data = []
+        for company in uploaded_data:
+            row = {
+                'CNPJ': company.get('cnpj', ''),
+                'Matriz ou Filial': company.get('matriz_filial', 'MATRIZ'),
+                'Razao Social': company.get('razao_social', ''),
+                'Nome Fantasia': company.get('nome_fantasia', ''),
+                'Situacao': company.get('situacao', 'ATIVA'),
+                'Data Situacao': company.get('data_situacao', '10/10/2025'),
+                'Natureza Juridica': company.get('natureza_juridica', ''),
+                'Abertura': company.get('abertura', '10/10/2025'),
+                'CNAE': company.get('cnae', ''),
+                'Ramo de Atividade': company.get('ramo_atividade', ''),
+                'CNAE secundario': company.get('cnae_secundario', ''),
+                'Tipo Logradouro': company.get('tipo_logradouro', ''),
+                'Logradouro': company.get('logradouro', ''),
+                'Numero': company.get('numero', ''),
+                'Complemento': company.get('complemento', ''),
+                'Bairro': company.get('bairro', ''),
+                'CEP': company.get('cep', ''),
+                'UF': company.get('uf', ''),
+                'Municipio': company.get('municipio', ''),
+                'Telefone1 Completo': company.get('telefone1', ''),
+                'Telefone2 Completo': company.get('telefone2', ''),
+                'E-mail': company.get('email', ''),
+                'Capital Social': company.get('capital_social', ''),
+                'Porte': company.get('porte', ''),
+                'Simples Nacional': company.get('simples_nacional', ''),
+                'MEI': company.get('mei', ''),
+                'Socio(s)': company.get('socios', ''),
+                'Tributacao': company.get('tributacao', ''),
+                'Dívidas FGTS': company.get('dividas_fgts', ''),
+                'Dívidas Não Previdenciárias': company.get('dividas_nao_previdenciarias', ''),
+                'Dívidas Previdenciárias': company.get('dividas_previdenciarias', '')
+            }
+            df_data.append(row)
+        
+        df = pd.DataFrame(df_data)
+        
+        # Criar buffer em memória
+        output = io.BytesIO()
+        
+        # Salvar como Excel
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Leads')
+        
+        output.seek(0)
+        
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='leads.xlsx'
+        )
+        
+    except Exception as e:
+        return jsonify({'error': f'Erro ao gerar Excel: {str(e)}'}), 500
+
+@app.route('/api/export/csv', methods=['GET'])
+def export_csv():
+    """Exporta dados para CSV usando pandas"""
+    try:
+        import pandas as pd
+        from flask import send_file
+        import io
+        
+        if not uploaded_data:
+            return jsonify({'error': 'Nenhum dado para exportar'}), 400
+        
+        # Criar DataFrame com estrutura idêntica ao arquivo original
+        df_data = []
+        for company in uploaded_data:
+            row = {
+                'CNPJ': company.get('cnpj', ''),
+                'Matriz ou Filial': company.get('matriz_filial', 'MATRIZ'),
+                'Razao Social': company.get('razao_social', ''),
+                'Nome Fantasia': company.get('nome_fantasia', ''),
+                'Situacao': company.get('situacao', 'ATIVA'),
+                'Data Situacao': company.get('data_situacao', '10/10/2025'),
+                'Natureza Juridica': company.get('natureza_juridica', ''),
+                'Abertura': company.get('abertura', '10/10/2025'),
+                'CNAE': company.get('cnae', ''),
+                'Ramo de Atividade': company.get('ramo_atividade', ''),
+                'CNAE secundario': company.get('cnae_secundario', ''),
+                'Tipo Logradouro': company.get('tipo_logradouro', ''),
+                'Logradouro': company.get('logradouro', ''),
+                'Numero': company.get('numero', ''),
+                'Complemento': company.get('complemento', ''),
+                'Bairro': company.get('bairro', ''),
+                'CEP': company.get('cep', ''),
+                'UF': company.get('uf', ''),
+                'Municipio': company.get('municipio', ''),
+                'Telefone1 Completo': company.get('telefone1', ''),
+                'Telefone2 Completo': company.get('telefone2', ''),
+                'E-mail': company.get('email', ''),
+                'Capital Social': company.get('capital_social', ''),
+                'Porte': company.get('porte', ''),
+                'Simples Nacional': company.get('simples_nacional', ''),
+                'MEI': company.get('mei', ''),
+                'Socio(s)': company.get('socios', ''),
+                'Tributacao': company.get('tributacao', ''),
+                'Dívidas FGTS': company.get('dividas_fgts', ''),
+                'Dívidas Não Previdenciárias': company.get('dividas_nao_previdenciarias', ''),
+                'Dívidas Previdenciárias': company.get('dividas_previdenciarias', '')
+            }
+            df_data.append(row)
+        
+        df = pd.DataFrame(df_data)
+        
+        # Criar buffer em memória com encoding compatível com Excel
+        output = io.StringIO()
+        
+        # Usar separador de ponto e vírgula e encoding Windows para Excel brasileiro
+        df.to_csv(output, index=False, sep=';', encoding='latin-1')
+        
+        # Converter para BytesIO
+        csv_output = io.BytesIO()
+        csv_output.write(output.getvalue().encode('latin-1'))
+        csv_output.seek(0)
+        
+        return send_file(
+            csv_output,
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name='leads.csv'
+        )
+        
+    except Exception as e:
+        return jsonify({'error': f'Erro ao gerar CSV: {str(e)}'}), 500
 
 # Armazenamento para operações de desfazer
 undo_stack = []

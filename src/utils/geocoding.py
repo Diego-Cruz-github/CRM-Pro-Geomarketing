@@ -19,6 +19,7 @@ class GeocodingService:
         Usa ViaCEP + Nominatim (OpenStreetMap)
         """
         if not cep or len(cep) != 8:
+            print(f"DEBUG: CEP inválido ou vazio: '{cep}'")
             return None
         
         # Verificar cache
@@ -81,6 +82,7 @@ class GeocodingService:
                     return coords
             
             # Se falhou, tentar coordenadas aproximadas
+            print(f"DEBUG: Nominatim falhou para CEP {cep}, usando fallback")
             return self._get_fallback_coords(cep)
             
         except Exception as e:
@@ -100,6 +102,14 @@ class GeocodingService:
             '04': {'lat': -23.5505, 'lng': -46.6333, 'city': 'São Paulo'},     # SP Capital
             '05': {'lat': -23.5505, 'lng': -46.6333, 'city': 'São Paulo'},     # SP Capital
             '08': {'lat': -23.5505, 'lng': -46.6333, 'city': 'São Paulo'},     # SP Capital
+            '11': {'lat': -23.4000, 'lng': -46.8000, 'city': 'São Paulo Interior'},     # SP Interior - Sorocaba
+            '12': {'lat': -23.2000, 'lng': -46.9000, 'city': 'São Paulo Interior'},     # SP Interior - Jundiaí
+            '13': {'lat': -22.9000, 'lng': -47.1000, 'city': 'São Paulo Interior'},     # SP Interior - Campinas
+            '14': {'lat': -22.7000, 'lng': -47.6000, 'city': 'São Paulo Interior'},     # SP Interior - Piracicaba
+            '15': {'lat': -22.5000, 'lng': -47.4000, 'city': 'São Paulo Interior'},     # SP Interior - Rio Claro
+            '17': {'lat': -21.2000, 'lng': -47.8000, 'city': 'São Paulo Interior'},     # SP Interior - Ribeirão Preto
+            '18': {'lat': -21.8000, 'lng': -48.2000, 'city': 'São Paulo Interior'},     # SP Interior - Araraquara
+            '19': {'lat': -22.1000, 'lng': -47.9000, 'city': 'São Paulo Interior'},     # SP Interior - São Carlos
             
             '20': {'lat': -22.9068, 'lng': -43.1729, 'city': 'Rio de Janeiro'}, # RJ Capital
             '21': {'lat': -22.9068, 'lng': -43.1729, 'city': 'Rio de Janeiro'}, # RJ Capital
@@ -172,9 +182,18 @@ class GeocodingService:
         if coords:
             result = coords.copy()
             result['source'] = 'fallback'
+            
+            # Adicionar pequena variação para evitar sobreposição de markers
+            import random
+            variation = 0.01  # ~1km de variação
+            result['lat'] += random.uniform(-variation, variation)
+            result['lng'] += random.uniform(-variation, variation)
+            
+            print(f"DEBUG: CEP {cep} usando fallback regional para {coords['city']}")
             return result
         
         # Fallback nacional (centro do Brasil)
+        print(f"DEBUG: CEP {cep} usando fallback NACIONAL (Brasília) - CEP não mapeado")
         return {
             'lat': -15.7801,
             'lng': -47.9292,
