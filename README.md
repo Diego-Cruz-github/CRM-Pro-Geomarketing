@@ -19,13 +19,13 @@ A comprehensive customer relationship management system with advanced geolocatio
 <img src="SS's/cgif1-geomarketing.gif" width="600" alt="Geomarketing Demo">
 
 ### CRM Pipeline Management  
-<img src="SS's/ccrm1%20(1).gif" width="600" alt="CRM Pipeline Demo">
+<img src="SS's/ccrm1-_1_.gif" width="600" alt="CRM Pipeline Demo">
 
 ### Real-time Dashboard
-<img src="SS's/ccrmedashboard%20(1).gif" width="600" alt="Dashboard Demo">
+<img src="SS's/ccrmedashboard-_1_.gif" width="600" alt="Dashboard Demo">
 
 ### Business Intelligence Export
-<img src="SS's/cBiimplementação%20(1).gif" width="600" alt="BI Integration Demo">
+<img src="SS's/cBiimplementação-_1_.gif" width="600" alt="BI Integration Demo">
 
 </div>
 
